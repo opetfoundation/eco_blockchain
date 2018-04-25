@@ -5,6 +5,9 @@
 #
 version: '2'
 
+networks:
+  opet-fabric-mainnet:
+
 services:
 
   ca.fabric.opet.com:
@@ -23,3 +26,6 @@ services:
     command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
     volumes:
       - ./data/ca.fabric.opet.com/:/etc/hyperledger/fabric-ca-server
+      - ./data/hosts:/etc/hosts
+    networks:
+      - opet-fabric-mainnet
