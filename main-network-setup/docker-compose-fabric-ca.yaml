@@ -10,7 +10,7 @@ networks:
 
 services:
 
-  ca.fabric.opet.com:
+  ca.fabric.opetbot.com:
     container_name: ca_opet
     image: hyperledger/fabric-ca
     environment:
@@ -25,7 +25,7 @@ services:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
     volumes:
-      - ./data/ca.fabric.opet.com/:/etc/hyperledger/fabric-ca-server
+      - ./data/ca.fabric.opetbot.com/:/etc/hyperledger/fabric-ca-server
       - ./data/hosts:/etc/hosts
     networks:
       - opet-fabric-mainnet

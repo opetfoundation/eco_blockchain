@@ -21,7 +21,7 @@ Profiles:
             OrdererType: solo
 
             Addresses:
-                - orderer.fabric.opet.com:7050
+                - orderer.fabric.opetbot.com:7050
 
             # Batch Timeout: The amount of time to wait before creating a batch
             BatchTimeout: 2s
@@ -82,13 +82,13 @@ Organizations:
         ID: OpetMSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: data/fabric.opet.com/msp
+        MSPDir: data/fabric.opetbot.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.fabric.opet.com
+            - Host: peer0.fabric.opetbot.com
               Port: 7051
 
 ################################################################################
