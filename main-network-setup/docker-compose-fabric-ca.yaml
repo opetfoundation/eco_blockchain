@@ -1,0 +1,31 @@
+#
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+networks:
+  opet-fabric-mainnet:
+
+services:
+
+  ca.fabric.opet.com:
+    container_name: ca_opet
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-opet
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_DEBUG=true
+    env_file:
+      # Secrets
+      - "${ENV_FILE}"
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
+    volumes:
+      - ./data/ca.fabric.opet.com/:/etc/hyperledger/fabric-ca-server
+      - ./data/hosts:/etc/hosts
+    networks:
+      - opet-fabric-mainnet
