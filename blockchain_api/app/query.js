@@ -44,6 +44,9 @@ var queryChaincode = async function(peer, channelName, chaincodeName, args, fcn,
 			for (let i = 0; i < response_payloads.length; i++) {
 				logger.info('Chaincode query response: ' + response_payloads[i].toString('utf8'));
 			}
+			if (response_payloads[0].toString().includes("Error: 2 UNKNOWN: chaincode error (status: 500, message")){
+				throw new Error(response_payloads[0]);
+			}
 			return response_payloads[0].toString('utf8');
 		} else {
 			logger.error('response_payloads is null');
@@ -51,7 +54,7 @@ var queryChaincode = async function(peer, channelName, chaincodeName, args, fcn,
 		}
 	} catch(error) {
 		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
-		return error.toString();
+		throw new Error(error);
 	}
 };
 var getBlockByNumber = async function(peer, channelName, blockNumber, username, org_name) {
