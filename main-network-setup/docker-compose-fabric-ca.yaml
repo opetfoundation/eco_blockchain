@@ -15,7 +15,8 @@ services:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-opet
+      - FABRIC_CA_SERVER_CSR_HOSTS=ca.fabric.opetbot.com
+      - FABRIC_CA_SERVER_CA_NAME=ca_opet
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DEBUG=true
     env_file:
