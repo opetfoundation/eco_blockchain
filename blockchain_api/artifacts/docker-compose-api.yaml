@@ -1,0 +1,12 @@
+version: '3'
+services:
+  api:
+    build: .
+    volumes:
+      - ../:/code
+    environment:
+      - TARGET_NETWORK=docker
+      - HOST=0.0.0.0
+    command: bash -c "node start_chaincodes.js && PORT=4000 node app"
+    ports:
+      - 4000:4000
