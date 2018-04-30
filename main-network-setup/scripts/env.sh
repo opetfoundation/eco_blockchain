@@ -11,7 +11,14 @@ ORDERER_HOME=/etc/hyperledger/orderer
 
 ORDERER_ORG="opet"
 
-# Enroll the CA administrator
+# The path to the genesis block
+GENESIS_BLOCK_FILE=/data/genesis.block
+# The path to a channel transaction
+CHANNEL_TX_FILE=/data/channel.tx
+# Name of test channel
+CHANNEL_NAME=opet_channel
+
+# Enroll (login) the CA administrator
 function enrollCAAdmin {
    log "Enrolling with $CA_NAME as bootstrap identity ..."
    export FABRIC_CA_CLIENT_HOME=$HOME/cas/$CA_NAME
@@ -20,19 +27,51 @@ function enrollCAAdmin {
 }
 
 
-# Get CA certificates
-function getCACerts {
-   log "Getting CA certificates ..."
-   for ORG in $ORGS; do
-      log "Getting CA certs for organization $ORG and storing in $ORG_MSP_DIR"
-      export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
-      fabric-ca-client getcacert -d -u https://$CA_HOST:7054 -M $ORG_MSP_DIR
-      finishMSPSetup $ORG_MSP_DIR
-      # If ADMINCERTS is true, we need to enroll the admin now to populate the admincerts directory
-      if [ $ADMINCERTS ]; then
-         switchToAdminIdentity
+# Create the TLS directories of the MSP folder if they don't exist.
+# The fabric-ca-client should do this.
+function finishMSPSetup {
+   if [ $# -ne 1 ]; then
+      fatal "Usage: finishMSPSetup <targetMSPDIR>"
+   fi
+   if [ ! -d $1/tlscacerts ]; then
+      mkdir $1/tlscacerts
+      cp $1/cacerts/* $1/tlscacerts
+      if [ -d $1/intermediatecerts ]; then
+         mkdir $1/tlsintermediatecerts
+         cp $1/intermediatecerts/* $1/tlsintermediatecerts
       fi
-   done
+   fi
+}
+
+
+function generateChannelArtifacts() {
+  ORG=$ORDERER_ORG
+
+  which configtxgen
+  if [ "$?" -ne 0 ]; then
+    fatal "configtxgen tool not found. exiting"
+  fi
+
+  log "Generating orderer genesis block at $GENESIS_BLOCK_FILE"
+  # Note: For some unknown reason (at least for now) the block file can't be
+  # named orderer.genesis.block or the orderer will fail to launch!
+  configtxgen -profile OrgsOrdererGenesis -outputBlock $GENESIS_BLOCK_FILE
+  if [ "$?" -ne 0 ]; then
+    fatal "Failed to generate orderer genesis block"
+  fi
+
+  log "Generating channel configuration transaction at $CHANNEL_TX_FILE"
+  configtxgen -profile OrgsChannel -outputCreateChannelTx $CHANNEL_TX_FILE -channelID $CHANNEL_NAME
+  if [ "$?" -ne 0 ]; then
+    fatal "Failed to generate channel configuration transaction"
+  fi
+
+  log "Generating anchor peer update transaction for $ORG at $ANCHOR_TX_FILE"
+  configtxgen -profile OrgsChannel -outputAnchorPeersUpdate $ANCHOR_TX_FILE \
+              -channelID $CHANNEL_NAME -asOrg $ORG
+  if [ "$?" -ne 0 ]; then
+     fatal "Failed to generate anchor peer update for $ORG"
+  fi
 }
 
 

@@ -26,7 +26,7 @@ fabric-ca-logs:
 	@$(DOCKER_COMPOSE_FABRIC_CA) logs -f $(RUN_ARGS)
 
 fabric-ca-register:
-	@$(DOCKER_COMPOSE_FABRIC_CA) exec ca.fabric.opetbot.com /scripts/register-orderer.sh
+	@$(DOCKER_COMPOSE_FABRIC_CA) exec ca.fabric.opetbot.com /scripts/register-ca-identities.sh
 
 fabric-ca-bash:
 	@$(DOCKER_COMPOSE_FABRIC_CA) exec ca.fabric.opetbot.com bash
