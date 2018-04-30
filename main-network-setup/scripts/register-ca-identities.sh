@@ -11,16 +11,11 @@ function main {
    log "Registering CA identities ..."
 
    enrollCAAdmin
-   # registerOrdererIdentities
-   # registerOrganizationAdmin
-   # registerPeerIdentities
+   registerOrdererIdentities
+   registerOrganizationAdmin
+   registerPeerIdentities
 
    getOrgCACerts
-
-   # log "Building channel artifacts ..."
-   # makeConfigTxYaml
-   # generateChannelArtifacts
-   # log "Finished building channel artifacts"
 }
 
 
