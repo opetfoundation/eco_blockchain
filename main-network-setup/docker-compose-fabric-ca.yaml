@@ -23,9 +23,10 @@ services:
       - "${ENV_FILE}"
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
+    # command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
+    command: /bin/bash -c '/scripts/start-root-ca.sh'
     volumes:
       - ./data/ca.fabric.opetbot.com/:/etc/hyperledger/fabric-ca-server
-      - ./data/hosts:/etc/hosts
+      - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet

@@ -1,0 +1,34 @@
+#
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+services:
+
+  orderer.fabric.opetbot.com:
+    container_name: orderer.fabric.opetbot.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peer1_opet/tls/ca.crt, /etc/hyperledger/crypto/peer2_opet/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ./channel:/etc/hyperledger/configtx
+        #TODO: update paths (search example.com)
+        - ./channel/crypto-config/fabric.opetbot.com/orderers/orderer.fabric.opetbot.com/:/etc/hyperledger/crypto/orderer
+        # TODO: do we need this on orderer?
+        - ./channel/crypto-config/fabric.opetbot.com/peers/peer0.fabric.opetbot.com/:/etc/hyperledger/crypto/peer1_opet
+        - ./channel/crypto-config/fabric.opetbot.com/peers/peer1.fabric.opetbot.com/:/etc/hyperledger/crypto/peer2_opet
