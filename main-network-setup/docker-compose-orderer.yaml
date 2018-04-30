@@ -8,7 +8,7 @@ version: '2'
 services:
 
   orderer.fabric.opetbot.com:
-    container_name: orderer.fabric.opetbot.com
+    container_name: orderer_opet
     image: hyperledger/fabric-orderer
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
@@ -22,13 +22,9 @@ services:
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peer1_opet/tls/ca.crt, /etc/hyperledger/crypto/peer2_opet/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
-    command: orderer
+    command: /bin/bash -c '/scripts/start-orderer.sh'
     ports:
       - 7050:7050
     volumes:
-        - ./channel:/etc/hyperledger/configtx
-        #TODO: update paths (search example.com)
-        - ./channel/crypto-config/fabric.opetbot.com/orderers/orderer.fabric.opetbot.com/:/etc/hyperledger/crypto/orderer
-        # TODO: do we need this on orderer?
-        - ./channel/crypto-config/fabric.opetbot.com/peers/peer0.fabric.opetbot.com/:/etc/hyperledger/crypto/peer1_opet
-        - ./channel/crypto-config/fabric.opetbot.com/peers/peer1.fabric.opetbot.com/:/etc/hyperledger/crypto/peer2_opet
+        - ./data/orderer/etc/hyperledger/:/etc/hyperledger
+        - ./data/orderer/data/:/data
