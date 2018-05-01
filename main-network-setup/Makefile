@@ -1,6 +1,5 @@
-DOCKER_COMPOSE_FABRIC_CA=ENV_FILE=./.env docker-compose -f docker-compose-fabric-ca.yaml
-
-.PHONY:  fabric-ca-up fabric-ca-down fabric-ca-ps fabric-ca-logs
+DOCKER_COMPOSE_FABRIC_CA=ENV_FILE=./.env.ca docker-compose -f docker-compose-fabric-ca.yaml
+DOCKER_COMPOSE_ORDERER=ENV_FILE=./.env.orderer docker-compose -f docker-compose-orderer.yaml
 
 fabric-ca-up:
 	@$(DOCKER_COMPOSE_FABRIC_CA) up -d
@@ -37,3 +36,25 @@ fabric-ca-show-cert:
 
 fabric-ca-show-config:
 	@$(DOCKER_COMPOSE_FABRIC_CA) exec ca.fabric.opetbot.com cat /etc/hyperledger/fabric-ca/fabric-ca-server-config.yaml
+
+orderer-up:
+	@$(DOCKER_COMPOSE_ORDERER) up -d
+
+orderer-up-test:
+	# Start in non-daemon mode
+	@$(DOCKER_COMPOSE_ORDERER) up
+
+orderer-down:
+	@$(DOCKER_COMPOSE_ORDERER) down
+
+orderer-ps:
+	@$(DOCKER_COMPOSE_ORDERER) ps
+
+orderer-bash:
+	@$(DOCKER_COMPOSE_ORDERER) exec orderer.fabric.opetbot.com bash
+
+orderer-setup-bash:
+	@$(DOCKER_COMPOSE_ORDERER) exec orderer_setup bash
+
+fabric-ca-artifacts-gen:
+	@$(DOCKER_COMPOSE_FABRIC_CA) exec artifacts_gen /scripts/artifacts-gen.sh
