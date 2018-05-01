@@ -115,6 +115,17 @@ function generateChannelArtifacts() {
 }
 
 
+function setupHosts {
+   if [ -e /etc/hosts.orginal ]; then
+     # If we have modified the original file already, restore it before
+     # we modify it again.
+     cp /etc/hosts.orginal /etc/hosts
+   fi
+   cp /etc/hosts /etc/hosts.orginal
+   cat $SCRIPT_PATH/hosts >> /etc/hosts
+}
+
+
 # log a message
 function log {
    if [ "$1" = "-n" ]; then

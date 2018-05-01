@@ -1,4 +1,4 @@
-127.0.0.1	ca.fabric.opet.com
-127.0.0.1	orderer.fabric.opet.com
-127.0.0.1	peer0.fabric.opet.com
-127.0.0.1	peer1.fabric.opet.com
+127.0.0.1	ca.fabric.opetbot.com
+127.0.0.1	orderer.fabric.opetbot.com
+127.0.0.1	peer0.fabric.opetbot.com
+127.0.0.1	peer1.fabric.opetbot.com
