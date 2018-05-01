@@ -17,7 +17,7 @@ function setupOrderer {
   ENROLLMENT_URL=https://$ORDERER_USER:$ORDERER_PASS@$CA_HOST:7054
   ORDERER_HOST=orderer.fabric.opetbot.com
 
-  export FABRIC_CA_CLIENT_HOME=/etc/hyperledger/orderer
+  export FABRIC_CA_CLIENT_HOME=$ORDERER_HOME
   export FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
   # Enroll (login) 'orderer' user to CA
   fabric-ca-client enroll -d --enrollment.profile tls -u $ENROLLMENT_URL -M /tmp/tls --csr.hosts $ORDERER_HOST
@@ -35,23 +35,15 @@ function setupOrderer {
   # Finish setting up the local MSP for the orderer
   finishMSPSetup $ORDERER_GENERAL_LOCALMSPDIR
 
-  # export FABRIC_CA_CLIENT_HOME=/etc/hyperledger/orderer
-  # export FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
-  # fabric-ca-client enroll -d -u https://$ORG_ADMIN_USER:$ORG_ADMIN_PASS@$CA_HOST:7054
-  # getOrgCACerts
-  # # If admincerts are required in the MSP, copy the cert there now and to my local MSP also
-  # mkdir -p $(dirname "${ORG_ADMIN_CERT}")
-  # cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
-  # mkdir $ORG_ADMIN_HOME/msp/admincerts
-  # cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_HOME/msp/admincerts
+  echo Get organization certificates and copy admin certificate to orderer MSP
+  export CA_CERTFILE=/data/opet-ca-cert.pem
+  getOrgCACerts
+  ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
+  ORG_ADMIN_CERT=${ORDERER_GENERAL_LOCALMSPDIR}/admincerts/cert.pem
+  mkdir -p $(dirname "${ORG_ADMIN_CERT}")
+  cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
 
-  # # echo Get organization certificates ...
-  # # fabric-ca-client enroll -d -u https://$ORG_ADMIN_USER:$ORG_ADMIN_PASS@$CA_HOST:7054
-  # # getOrgCACerts
-  # # copyAdminCert $ORDERER_GENERAL_LOCALMSPDIR
-
-  # echo Create the genesis block
-  # generateChannelArtifacts
+  touch $ORDERER_HOME/setup.done
 }
 
 function startOrderer {
@@ -76,5 +68,7 @@ function startOrderer {
 }
 
 
-setupOrderer
+if [ ! -e $ORDERER_HOME/setup.done ]; then
+  setupOrderer
+fi
 startOrderer

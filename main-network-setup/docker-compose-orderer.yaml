@@ -30,7 +30,8 @@ services:
     env_file:
       # Secrets
       - "${ENV_FILE}"
-    command: /bin/bash -c "sleep infinity & wait"
+    # command: /bin/bash -c "sleep infinity & wait"
+    command: /bin/bash -c "/scripts/start-orderer.sh"
     ports:
       - 7050:7050
     volumes:
