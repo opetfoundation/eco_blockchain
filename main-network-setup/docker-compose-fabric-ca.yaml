@@ -20,6 +20,8 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca_opet
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DEBUG=true
+      # Certificate for the CA client
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/fabric-ca-server/ca-cert.pem
       # This need to be copied to orderer / peer hosts - CA root certificate
       - TARGET_CERTFILE=/data/opet-ca-cert.pem
     env_file:

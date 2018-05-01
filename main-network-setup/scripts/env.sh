@@ -4,7 +4,6 @@ SCRIPT_PATH=`dirname $0`
 
 CA_HOST=ca.fabric.opetbot.com
 CA_NAME=ca_opet
-CA_CERTFILE=$FABRIC_CA_SERVER_HOME/ca-cert.pem
 
 ORDERER_ORG="opet"
 
@@ -15,15 +14,6 @@ CHANNEL_TX_FILE=/data/channel.tx
 ANCHOR_TX_FILE=/data/fabric.opetbot.com/anchors.tx
 # Name of the channel
 CHANNEL_NAME=opet_channel
-
-# Enroll (login) the CA administrator
-function enrollCAAdmin {
-   log "Enrolling with $CA_NAME as bootstrap identity ..."
-   export FABRIC_CA_CLIENT_HOME=$HOME/cas/$CA_NAME
-   export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CERTFILE
-   fabric-ca-client enroll -d -u https://$CA_ADMIN_USER:$CA_ADMIN_PASS@$CA_HOST:7054
-}
-
 
 # Create the TLS directories of the MSP folder if they don't exist.
 # The fabric-ca-client should do this.
@@ -50,14 +40,11 @@ function getOrgCACerts {
    ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
 
    log "Getting CA certs for organization $ORG and storing in $ORG_MSP_DIR"
-   export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CERTFILE
-
    fabric-ca-client getcacert -d -u https://$CA_HOST:7054 -M $ORG_MSP_DIR
    finishMSPSetup $ORG_MSP_DIR
 
    # switchToAdminIdentity
    export FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
-   # export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CERTFILE
    export FABRIC_CA_CLIENT_TLS_CERTFILES=$ORG_MSP_DIR/tlscacerts/ca-fabric-opetbot-com-7054.pem
    fabric-ca-client enroll -d -u https://$ORG_ADMIN_USER:$ORG_ADMIN_PASS@$CA_HOST:7054
    # If admincerts are required in the MSP, copy the cert there now and to my local MSP also

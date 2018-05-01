@@ -14,6 +14,8 @@ services:
     container_name: orderer_opet
     image: hyperledger/fabric-ca-orderer
     environment:
+      - FABRIC_CA_CLIENT_HOME=/data
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
       - ORDERER_HOME=/data
       - ORDERER_HOST=orderer.fabric.opetbot.com
       - ORDERER_GENERAL_LOGLEVEL=debug

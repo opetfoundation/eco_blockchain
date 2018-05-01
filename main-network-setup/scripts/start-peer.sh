@@ -30,7 +30,6 @@ function setupPeer {
 
   # Check if we need the org amdin certificate
   echo Get organization certificates and copy admin certificate to peer MSP
-  export CA_CERTFILE=/data/opet-ca-cert.pem
   getOrgCACerts
   # The org admin home is created in getOrgCACerts
   ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin

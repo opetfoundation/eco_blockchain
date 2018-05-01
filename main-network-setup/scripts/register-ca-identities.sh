@@ -21,6 +21,16 @@ function main {
 }
 
 
+# Enroll (login) the CA administrator
+function enrollCAAdmin {
+   log "Enrolling with $CA_NAME as bootstrap identity ..."
+   export FABRIC_CA_CLIENT_HOME=$HOME/cas/$CA_NAME
+   # We use the value from the environment (specified in docker config)
+   export FABRIC_CA_CLIENT_TLS_CERTFILES=$FABRIC_CA_CLIENT_TLS_CERTFILES
+   fabric-ca-client enroll -d -u https://$CA_ADMIN_USER:$CA_ADMIN_PASS@$CA_HOST:7054
+}
+
+
 # Register orderer identity
 function registerOrdererIdentities {
    log "Registering orderer with $CA_NAME"

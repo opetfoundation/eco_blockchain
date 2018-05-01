@@ -17,17 +17,8 @@ function setupOrderer {
   ENROLLMENT_URL=https://$ORDERER_USER:$ORDERER_PASS@$CA_HOST:7054
   ORDERER_HOST=orderer.fabric.opetbot.com
 
-  export FABRIC_CA_CLIENT_HOME=$ORDERER_HOME
-  export FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
-  # Enroll (login) 'orderer' user to CA
-  fabric-ca-client enroll -d --enrollment.profile tls -u $ENROLLMENT_URL -M /tmp/tls --csr.hosts $ORDERER_HOST
-
-  # Copy the TLS key and cert to the appropriate place
-  TLSDIR=$ORDERER_HOME/tls
-  mkdir -p $TLSDIR
-  cp /tmp/tls/keystore/* $ORDERER_GENERAL_TLS_PRIVATEKEY
-  cp /tmp/tls/signcerts/* $ORDERER_GENERAL_TLS_CERTIFICATE
-  rm -rf /tmp/tls
+  echo Enroll orderer user to CA
+  genClientTLSCert $ENROLLMENT_URL $ORDERER_HOST $ORDERER_GENERAL_TLS_CERTIFICATE $ORDERER_GENERAL_TLS_PRIVATEKEY
 
   # Enroll again to get the orderer's enrollment certificate (default profile)
   fabric-ca-client enroll -d -u $ENROLLMENT_URL -M $ORDERER_GENERAL_LOCALMSPDIR
@@ -36,7 +27,7 @@ function setupOrderer {
   finishMSPSetup $ORDERER_GENERAL_LOCALMSPDIR
 
   echo Get organization certificates and copy admin certificate to orderer MSP
-  export CA_CERTFILE=/data/opet-ca-cert.pem
+  # export CA_CERTFILE=/data/opet-ca-cert.pem
   getOrgCACerts
   # The org admin home is created in getOrgCACerts
   ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin

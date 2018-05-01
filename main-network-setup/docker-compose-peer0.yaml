@@ -14,12 +14,12 @@ services:
     image: hyperledger/fabric-ca-peer
     container_name: peer0_opet
     environment:
-      - PEER_NAME=peer0-opet
-      - PEER_HOME=/data
-      - PEER_HOST=peer0.fabric.opetbot.com
       # Fabric client home is the same as peer home
       - FABRIC_CA_CLIENT_HOME=/data
       - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
+      - PEER_NAME=peer0-opet
+      - PEER_HOME=/data
+      - PEER_HOST=peer0.fabric.opetbot.com
       - CORE_PEER_ID=peer0-opet
       # - CORE_PEER_ID=peer0.fabric.opetbot.com
       - CORE_PEER_ADDRESS=peer0.fabric.opetbot.com:7051
