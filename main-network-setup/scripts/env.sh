@@ -112,6 +112,29 @@ function generateChannelArtifacts() {
 }
 
 
+function genClientTLSCert {
+   if [ $# -ne 4 ]; then
+      echo "Usage: genClientTLSCert <enrollment url> <host name> <cert file> <key file>: $*"
+      exit 1
+   fi
+
+   ENROLLMENT_URL=$1
+   HOST_NAME=$2
+   CERT_FILE=$3
+   KEY_FILE=$4
+
+   rm -r /tmp/tls || true
+
+   # Get a client cert
+   fabric-ca-client enroll -d --enrollment.profile tls -u $ENROLLMENT_URL -M /tmp/tls --csr.hosts $HOST_NAME
+
+   mkdir /data/tls || true
+   cp /tmp/tls/signcerts/* $CERT_FILE
+   cp /tmp/tls/keystore/* $KEY_FILE
+   rm -rf /tmp/tls
+}
+
+
 function setupHosts {
    if [ -e /etc/hosts.orginal ]; then
      # If we have modified the original file already, restore it before

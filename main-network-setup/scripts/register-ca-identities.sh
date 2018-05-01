@@ -13,7 +13,9 @@ function main {
    enrollCAAdmin
    registerOrdererIdentities
    registerOrganizationAdmin
-   registerPeerIdentities
+   registerPeerIdentities $PEER0_USER $PEER0_PASS
+   registerPeerIdentities $PEER1_USER $PEER1_PASS
+   registerPeerIdentities $PEER2_USER $PEER2_PASS
 
    getOrgCACerts
 }
@@ -42,11 +44,14 @@ function registerOrganizationAdmin {
 
 # Register any identities associated with a peer
 function registerPeerIdentities {
-   PEER_NAME=peer0_opet
-   PEER_USER=$PEER0_USER
-   PEER_PASS=$PEER0_PASS
-   log "Registering $PEER_NAME with $CA_NAME"
-   fabric-ca-client register -d --id.name $PEER_NAME --id.secret $PEER_PASS --id.type peer
+   if [ $# -ne 2 ]; then
+      echo "Usage: registerPeerIdentities <peer user> <peer pass>: $*"
+      exit 1
+   fi
+   PEER_USER=$1
+   PEER_PASS=$2
+   log "Registering $PEER_USER with $CA_NAME"
+   fabric-ca-client register -d --id.name $PEER_USER --id.secret $PEER_PASS --id.type peer
 }
 
 

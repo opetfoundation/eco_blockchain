@@ -1,6 +1,6 @@
 DOCKER_COMPOSE_FABRIC_CA=ENV_FILE=./.env.ca docker-compose -f docker-compose-fabric-ca.yaml
 DOCKER_COMPOSE_ORDERER=ENV_FILE=./.env.orderer docker-compose -f docker-compose-orderer.yaml
-DOCKER_COMPOSE_PEER0=ENV_FILE=./.env.orderer docker-compose -f docker-compose-peer0.yaml
+DOCKER_COMPOSE_PEER0=ENV_FILE=./.env.peer0 docker-compose -f docker-compose-peer0.yaml
 
 fabric-ca-up:
 	@$(DOCKER_COMPOSE_FABRIC_CA) up -d

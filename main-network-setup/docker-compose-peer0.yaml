@@ -5,6 +5,9 @@
 #
 version: '2'
 
+networks:
+  opet-fabric-mainnet:
+
 services:
 
   peer0.fabric.opetbot.com:
@@ -12,9 +15,11 @@ services:
     container_name: peer0_opet
     environment:
       - PEER_NAME=peer0-opet
-      #- PEER_HOME=/opt/gopath/src/github.com/hyperledger/fabric/peer
       - PEER_HOME=/data
       - PEER_HOST=peer0.fabric.opetbot.com
+      # Fabric client home is the same as peer home
+      - FABRIC_CA_CLIENT_HOME=/data
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
       - CORE_PEER_ID=peer0-opet
       # - CORE_PEER_ID=peer0.fabric.opetbot.com
       - CORE_PEER_ADDRESS=peer0.fabric.opetbot.com:7051
@@ -47,10 +52,9 @@ services:
     env_file:
       # Secrets
       - "${ENV_FILE}"
-    # working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     working_dir: /data
-    command: /bin/bash -c "sleep infinity & wait"
-    # command: /bin/bash -c "/scripts/start-peer.sh"
+    # command: /bin/bash -c "sleep infinity & wait"
+    command: /bin/bash -c "/scripts/start-peer.sh"
     # command: /bin/bash -c '/scripts/start-peer.sh 2>&1 | tee /data/logs/peer1-org1.log'
     ports:
       - 7051:7051
@@ -59,5 +63,8 @@ services:
         - ./data/peer0/:/data
         - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
         - /var/run/:/host/var/run/
+        - ./scripts:/scripts
         # - ./data/channel.tx:/data/channel.tx
         # - /var/run/:/host/var/run/
+    networks:
+      - opet-fabric-mainnet
