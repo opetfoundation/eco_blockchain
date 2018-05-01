@@ -38,7 +38,9 @@ function setupOrderer {
   echo Get organization certificates and copy admin certificate to orderer MSP
   export CA_CERTFILE=/data/opet-ca-cert.pem
   getOrgCACerts
+  # The org admin home is created in getOrgCACerts
   ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
+  # We need to copy the admin certificate to orderer's MSP
   ORG_ADMIN_CERT=${ORDERER_GENERAL_LOCALMSPDIR}/admincerts/cert.pem
   mkdir -p $(dirname "${ORG_ADMIN_CERT}")
   cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
@@ -69,6 +71,8 @@ function startOrderer {
 
 
 if [ ! -e $ORDERER_HOME/setup.done ]; then
+  # Only do the setup once.
+  # To trigger the setup, do `rm -rf data/orderer/`.
   setupOrderer
 fi
 startOrderer
