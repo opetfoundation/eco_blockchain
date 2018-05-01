@@ -7,6 +7,11 @@ CA_NAME=ca_opet
 
 ORDERER_ORG="opet"
 
+ORG=$ORDERER_ORG
+ORG_MSP_DIR=/data/fabric.opetbot.com/msp
+ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
+ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
+
 # The path to the genesis block
 GENESIS_BLOCK_FILE=/data/genesis.block
 # The path to a channel transaction
@@ -34,11 +39,6 @@ function finishMSPSetup {
 
 # Get Organization CA certificates
 function getOrgCACerts {
-   ORG=$ORDERER_ORG
-   ORG_MSP_DIR=/data/fabric.opetbot.com/msp
-   ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
-   ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
-
    log "Getting CA certs for organization $ORG and storing in $ORG_MSP_DIR"
    fabric-ca-client getcacert -d -u https://$CA_HOST:7054 -M $ORG_MSP_DIR
    finishMSPSetup $ORG_MSP_DIR

@@ -30,13 +30,10 @@ function setupPeer {
 
   # Check if we need the org amdin certificate
   echo Get organization certificates and copy admin certificate to peer MSP
+  # Create organization MSP folder
   getOrgCACerts
-  # The org admin home is created in getOrgCACerts
-  ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
-  # We need to copy the admin certificate to peer's MSP
-  ORG_ADMIN_CERT=${CORE_PEER_MSPCONFIGPATH}/admincerts/cert.pem
-  mkdir -p $(dirname "${ORG_ADMIN_CERT}")
-  cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
+  # We need to copy the admin certificate to orderer's MSP
+  copyAdminCert ${CORE_PEER_MSPCONFIGPATH}
 
   touch $PEER_HOME/setup.done
 }
