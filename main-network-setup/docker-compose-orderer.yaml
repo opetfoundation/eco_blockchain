@@ -5,26 +5,39 @@
 #
 version: '2'
 
+networks:
+  opet-fabric-mainnet:
+
 services:
 
   orderer.fabric.opetbot.com:
     container_name: orderer_opet
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-ca-orderer
     environment:
+      - ORDERER_HOME=/etc/hyperledger/orderer
+      - ORDERER_HOST=orderer.fabric.opetbot.com
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_GENESISFILE=/data/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OpetOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peer1_opet/tls/ca.crt, /etc/hyperledger/crypto/peer2_opet/tls/ca.crt]
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
-    command: /bin/bash -c '/scripts/start-orderer.sh'
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/orderer/tls/server.crt
+      # This certificate need to be copied from CA
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/data/opet-ca-cert.pem]
+    env_file:
+      # Secrets
+      - "${ENV_FILE}"
+    command: /bin/bash -c "sleep infinity & wait"
     ports:
       - 7050:7050
     volumes:
-        - ./data/orderer/etc/hyperledger/:/etc/hyperledger
-        - ./data/orderer/data/:/data
+      - ./data/orderer/etc/hyperledger/:/etc/hyperledger
+      - ./data/orderer/data/:/data
+      - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
+      - ./data/genesis.block:/data/genesis.block
+      - ./scripts:/scripts
+    networks:
+      - opet-fabric-mainnet

@@ -19,6 +19,8 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca_opet
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DEBUG=true
+      # This need to be copied to orderer / peer hosts - CA root certificate
+      - TARGET_CERTFILE=/data/opet-ca-cert.pem
     env_file:
       # Secrets
       - "${ENV_FILE}"
@@ -29,6 +31,10 @@ services:
     volumes:
       - ./data/ca/etc/hyperledger/:/etc/hyperledger
       - ./data/ca/data/:/data
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - opet-fabric-mainnet
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
