@@ -55,6 +55,21 @@ function setupOrderer {
 }
 
 function startOrderer {
+  # Note: part of the config is backed into the image under /etc/hyperledger/fabric:
+  # The config path environment variable is set to:
+  #   FABRIC_CFG_PATH="/etc/hyperledger/fabric"
+  #
+  # This is the path that is used by orderer (and also other tools like configtxgen) to
+  # find the configuration.
+  # Here we have:
+  #
+  #   root@a68933754a0b:/# ls /etc/hyperledger/fabric/
+  #   configtx.yaml  core.yaml  msp  orderer.yaml
+  #
+  # So the orderer.yaml that is used by orderer was not changed and we use the default one.
+  # Note: without this config, the orderer wouldn't start and raise the error:
+  #  [orderer/common/server] Main -> ERRO 001 failed to parse config:  Error reading configuration: Unsupported Config Type ""
+  #
   # Start the orderer
   env | grep ORDERER
   orderer

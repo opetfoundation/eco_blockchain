@@ -34,7 +34,6 @@ services:
     ports:
       - 7050:7050
     volumes:
-      - ./data/orderer/etc/hyperledger/:/etc/hyperledger
       - ./data/orderer/data/:/data
       - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
       - ./data/genesis.block:/data/genesis.block

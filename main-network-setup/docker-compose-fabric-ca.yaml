@@ -29,7 +29,6 @@ services:
     # command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
     command: /bin/bash -c '/scripts/start-root-ca.sh'
     volumes:
-      - ./data/ca/etc/hyperledger/:/etc/hyperledger
       - ./data:/data
       - ./scripts:/scripts
     networks:
@@ -40,7 +39,6 @@ services:
     image: hyperledger/fabric-ca-tools
     command: /bin/bash -c "sleep infinity & wait"
     volumes:
-      - ./data/ca/etc/hyperledger/:/etc/hyperledger
       - ./data:/data
       - ./scripts:/scripts
     networks:
