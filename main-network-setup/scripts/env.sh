@@ -4,12 +4,7 @@ SCRIPT_PATH=`dirname $0`
 
 CA_HOST=ca.fabric.opetbot.com
 CA_NAME=ca_opet
-# CA_SERVER_HOME=/etc/hyperledger/fabric-ca
 CA_CERTFILE=$FABRIC_CA_SERVER_HOME/ca-cert.pem
-
-ORDERER_HOST=orderer.fabric.opetbot.com
-ORDERER_NAME=orderer_opet
-ORDERER_HOME=/etc/hyperledger/orderer
 
 ORDERER_ORG="opet"
 
@@ -53,7 +48,6 @@ function getOrgCACerts {
    ORG_MSP_DIR=/data/fabric.opetbot.com/msp
    ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
    ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
-   ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
 
    log "Getting CA certs for organization $ORG and storing in $ORG_MSP_DIR"
    export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CERTFILE

@@ -21,7 +21,7 @@ function main {
 
 # Register orderer identity
 function registerOrdererIdentities {
-   log "Registering $ORDERER_NAME with $CA_NAME"
+   log "Registering orderer with $CA_NAME"
    fabric-ca-client register -d --id.name $ORDERER_USER --id.secret $ORDERER_PASS --id.type orderer
 }
 

@@ -14,17 +14,17 @@ services:
     container_name: orderer_opet
     image: hyperledger/fabric-ca-orderer
     environment:
-      - ORDERER_HOME=/etc/hyperledger/orderer
+      - ORDERER_HOME=/data
       - ORDERER_HOST=orderer.fabric.opetbot.com
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/data/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OpetOrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPDIR=/data/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/data/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/data/tls/server.crt
       # This certificate need to be copied from CA
       - ORDERER_GENERAL_TLS_ROOTCAS=[/data/opet-ca-cert.pem]
     env_file:
@@ -35,7 +35,7 @@ services:
     ports:
       - 7050:7050
     volumes:
-      - ./data/orderer/data/:/data
+      - ./data/orderer/:/data
       - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
       - ./data/genesis.block:/data/genesis.block
       - ./scripts:/scripts
