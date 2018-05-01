@@ -30,11 +30,18 @@ services:
     command: /bin/bash -c '/scripts/start-root-ca.sh'
     volumes:
       - ./data/ca/etc/hyperledger/:/etc/hyperledger
-      - ./data/ca/data/:/data
       - ./data:/data
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
+
+  artifacts_gen:
+    container_name: artifacts_gen
+    image: hyperledger/fabric-ca-tools
+    command: /bin/bash -c "sleep infinity & wait"
+    volumes:
+      - ./data/ca/etc/hyperledger/:/etc/hyperledger
+      - ./data:/data
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet

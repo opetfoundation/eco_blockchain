@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_PATH=`dirname $0`
+
 CA_HOST=ca.fabric.opetbot.com
 CA_NAME=ca_opet
 # CA_SERVER_HOME=/etc/hyperledger/fabric-ca
@@ -15,7 +17,8 @@ ORDERER_ORG="opet"
 GENESIS_BLOCK_FILE=/data/genesis.block
 # The path to a channel transaction
 CHANNEL_TX_FILE=/data/channel.tx
-# Name of test channel
+ANCHOR_TX_FILE=/data/fabric.opetbot.com/anchors.tx
+# Name of the channel
 CHANNEL_NAME=opet_channel
 
 # Enroll (login) the CA administrator
@@ -95,19 +98,19 @@ function generateChannelArtifacts() {
   log "Generating orderer genesis block at $GENESIS_BLOCK_FILE"
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
-  configtxgen -profile OrgsOrdererGenesis -outputBlock $GENESIS_BLOCK_FILE
+  configtxgen -profile OpetOrdererGenesis -outputBlock $GENESIS_BLOCK_FILE
   if [ "$?" -ne 0 ]; then
     fatal "Failed to generate orderer genesis block"
   fi
 
   log "Generating channel configuration transaction at $CHANNEL_TX_FILE"
-  configtxgen -profile OrgsChannel -outputCreateChannelTx $CHANNEL_TX_FILE -channelID $CHANNEL_NAME
+  configtxgen -profile OpetChannel -outputCreateChannelTx $CHANNEL_TX_FILE -channelID $CHANNEL_NAME
   if [ "$?" -ne 0 ]; then
     fatal "Failed to generate channel configuration transaction"
   fi
 
   log "Generating anchor peer update transaction for $ORG at $ANCHOR_TX_FILE"
-  configtxgen -profile OrgsChannel -outputAnchorPeersUpdate $ANCHOR_TX_FILE \
+  configtxgen -profile OpetChannel -outputAnchorPeersUpdate $ANCHOR_TX_FILE \
               -channelID $CHANNEL_NAME -asOrg $ORG
   if [ "$?" -ne 0 ]; then
      fatal "Failed to generate anchor peer update for $ORG"
