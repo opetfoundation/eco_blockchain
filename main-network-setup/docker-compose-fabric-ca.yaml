@@ -10,22 +10,57 @@ networks:
 
 services:
 
-  ca.fabric.opet.com:
+  ca.fabric.opetbot.com:
+    restart: always
     container_name: ca_opet
     image: hyperledger/fabric-ca
     environment:
-      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-opet
+      # - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_HOME=/data/fabric-ca-server
+      - FABRIC_CA_SERVER_CSR_HOSTS=ca.fabric.opetbot.com
+      - FABRIC_CA_SERVER_CA_NAME=ca_opet
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DEBUG=true
+      # Certificate for the CA client
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/fabric-ca-server/ca-cert.pem
+      # This need to be copied to orderer / peer hosts - CA root certificate
+      - TARGET_CERTFILE=/data/opet-ca-cert.pem
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
     env_file:
       # Secrets
       - "${ENV_FILE}"
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
+    # command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
+    command: /bin/bash -c '/scripts/start-root-ca.sh'
     volumes:
-      - ./data/ca.fabric.opet.com/:/etc/hyperledger/fabric-ca-server
-      - ./data/hosts:/etc/hosts
+      - ./data:/data
+      - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    image: postgres:10
+    env_file:
+      # Secrets: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+      - "${ENV_FILE}"
+    volumes:
+      - ./data/fabric-ca-postgresql:/var/lib/postgresql/data
+    networks:
+      - opet-fabric-mainnet
+
+  artifacts_gen:
+    container_name: artifacts_gen
+    image: hyperledger/fabric-ca-tools
+    command: /bin/bash -c "sleep infinity & wait"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - opet-fabric-mainnet
+    depends_on:
+      - ca.fabric.opetbot.com

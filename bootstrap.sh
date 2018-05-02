@@ -30,7 +30,7 @@ printHelp() {
 
 dockerFabricPull() {
   local FABRIC_TAG=$1
-  for IMAGES in peer orderer ccenv javaenv tools; do
+  for IMAGES in peer orderer tools ccenv; do
       echo "==> FABRIC IMAGE: $IMAGES"
       echo
       docker pull hyperledger/fabric-$IMAGES:$FABRIC_TAG
@@ -52,8 +52,10 @@ dockerCaPull() {
       local CA_TAG=$1
       echo "==> FABRIC CA IMAGE"
       echo
-      docker pull hyperledger/fabric-ca:$CA_TAG
-      docker tag hyperledger/fabric-ca:$CA_TAG hyperledger/fabric-ca
+      for image in "" "-tools" "-orderer" "-peer"; do
+         docker pull hyperledger/fabric-ca${image}:$CA_TAG
+         docker tag hyperledger/fabric-ca${image}:$CA_TAG hyperledger/fabric-ca${image}
+      done
 }
 
 : ${CA_TAG:="$MARCH-$CA_VERSION"}

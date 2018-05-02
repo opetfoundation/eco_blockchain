@@ -1,0 +1,46 @@
+#
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+networks:
+  opet-fabric-mainnet:
+
+services:
+
+  orderer.fabric.opetbot.com:
+    container_name: orderer_opet
+    image: hyperledger/fabric-ca-orderer
+    environment:
+      - FABRIC_CA_CLIENT_HOME=/data
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
+      - ORDERER_HOME=/data
+      - ORDERER_HOST=orderer.fabric.opetbot.com
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/data/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OpetOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/data/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/data/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/data/tls/server.crt
+      # This certificate need to be copied from CA
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/data/opet-ca-cert.pem]
+    env_file:
+      # Secrets
+      - "${ENV_FILE}"
+    # command: /bin/bash -c "sleep infinity & wait"
+    command: /bin/bash -c "/scripts/start-orderer.sh"
+    ports:
+      - 7050:7050
+    volumes:
+      - ./data/orderer/:/data
+      - ./data/orderer_production/:/var/hyperledger/production
+      - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
+      - ./data/genesis.block:/data/genesis.block
+      - ./scripts:/scripts
+    networks:
+      - opet-fabric-mainnet
