@@ -11,6 +11,7 @@ networks:
 services:
 
   ca.fabric.opetbot.com:
+    restart: always
     container_name: ca_opet
     image: hyperledger/fabric-ca
     environment:
@@ -24,6 +25,8 @@ services:
       - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/fabric-ca-server/ca-cert.pem
       # This need to be copied to orderer / peer hosts - CA root certificate
       - TARGET_CERTFILE=/data/opet-ca-cert.pem
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
     env_file:
       # Secrets
       - "${ENV_FILE}"
@@ -36,6 +39,19 @@ services:
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    image: postgres:10
+    env_file:
+      # Secrets: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+      - "${ENV_FILE}"
+    volumes:
+      - ./data/fabric-ca-postgresql:/var/lib/postgresql/data
+    networks:
+      - opet-fabric-mainnet
 
   artifacts_gen:
     container_name: artifacts_gen
@@ -46,3 +62,5 @@ services:
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
+    depends_on:
+      - ca.fabric.opetbot.com
