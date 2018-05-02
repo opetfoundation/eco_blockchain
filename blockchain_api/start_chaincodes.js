@@ -64,8 +64,8 @@ var initFunction = async function() {
 
 
 	logger.debug('==================== INSTALL CHAINCODE ==================');
-	var chaincodeName = "mycc";
-	var chaincodePath = 'chaincode/assets_accounter';
+	var chaincodeName = "mycc11";
+	var chaincodePath = 'chaincode/opetbot';
 	var chaincodeVersion = '0';
 	var chaincodeType = "golang";
 	logger.debug('peers : ' + peers); // target peers list
