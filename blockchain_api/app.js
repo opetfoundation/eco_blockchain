@@ -42,9 +42,9 @@ var query = require('./app/query.js');
 var host = process.env.HOST || hfc.getConfigSetting('host');
 var port = process.env.PORT || hfc.getConfigSetting('port');
 
-var peers = ["peer0.org1.example.com","peer1.org1.example.com"];
-var chaincodeName = 'mycc11';
-var channelName = 'mychannel';
+var peers = [process.env.PEER_HOST];
+var chaincodeName = process.env.CHAINCODE_NAME;
+var channelName = process.env.CHANNEL_NAME;
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATONS ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

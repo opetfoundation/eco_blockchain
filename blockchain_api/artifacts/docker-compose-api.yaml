@@ -7,6 +7,9 @@ services:
     environment:
       - TARGET_NETWORK=docker
       - HOST=0.0.0.0
+      - PEER_HOST=peer0.org1.example.com
+      - CHANNEL_NAME=mychannel
+      - CHAINCODE_NAME=mycc11
     command: bash -c "node start_chaincodes.js && PORT=4000 node app"
     ports:
       - 4000:4000
