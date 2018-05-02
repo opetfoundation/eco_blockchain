@@ -38,7 +38,7 @@ services:
       - 7050:7050
     volumes:
       - ./data/orderer/:/data
-      - ./data/orderer_ledger/:/var/hyperledger/production/orderer
+      - ./data/orderer_production/:/var/hyperledger/production
       - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
       - ./data/genesis.block:/data/genesis.block
       - ./scripts:/scripts
