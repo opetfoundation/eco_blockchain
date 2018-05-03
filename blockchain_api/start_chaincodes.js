@@ -25,6 +25,11 @@ var invoke = require('./app/invoke-transaction.js');
 var query = require('./app/query.js');
 var host = process.env.HOST || hfc.getConfigSetting('host');
 var port = process.env.PORT || hfc.getConfigSetting('port');
+var peers = [process.env.PEER_HOST];
+var chaincodeName = process.env.CHAINCODE_NAME || 'mychannel';
+var channelName = process.env.CHANNEL_NAME || 'mycc11';
+var channelConfigPath = process.env.CHANNEL_CONFIG_PATH || "../artifacts/channel/mychannel.tx";
+var chaincodePath = process.env.CHAINCODE_PATH || 'chaincode/opetbot';
 
 
 var initFunction = async function() {
@@ -42,8 +47,7 @@ var initFunction = async function() {
 	}
 	try {
 		logger.info('<<<<<<<<<<<<<<<<< C R E A T E  C H A N N E L >>>>>>>>>>>>>>>>>');;
-		var channelName = 'mychannel';
-		var channelConfigPath = "../artifacts/channel/mychannel.tx";
+		
 		logger.debug('Channel name : ' + channelName);
 		logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/mychannel.tx
 		await createChannel.createChannel(channelName, channelConfigPath, username, orgname);
@@ -64,8 +68,6 @@ var initFunction = async function() {
 
 
 	logger.debug('==================== INSTALL CHAINCODE ==================');
-	var chaincodeName = "mycc11";
-	var chaincodePath = 'chaincode/opetbot';
 	var chaincodeVersion = '0';
 	var chaincodeType = "golang";
 	logger.debug('peers : ' + peers); // target peers list
