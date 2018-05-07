@@ -18,18 +18,23 @@ The setup procedure is described below.
 - Register network participants with CA: `make fabric-ca-register`
 - Generage artifacts `make fabric-ca-artifacts-gen`
 - Get /data/opet-ca-cert.pem, /data/genesis.block, /data/channel.tx (will be needed by orderer / peer hosts)
+- Get /data/fabric.opetbot.com (organization MSP, will be needed for channel setup)
 
 [Orderer host]
 
 - Edit the `.env.orderer` file, set passwords for Orderer
 - Put opet-ca-cert.pem, genesis.block (copied from CA instance) to data/
-- Start Orderer: `make orderer-up`
+  - Note: in local setup (single machine tests), run `make artifacts-copy` instead of manual copying
+- Start the orderer: `make orderer-up`
 
 [Peer 0 host]
 
 - Edit the `.env.peer0` file, set passwords for Orderer
 - Put opet-ca-cert.pem, channel.tx (copied from CA instance) to data/
-- Start Orderer: `make peer0-up`
+- Copy fabric.opetbot.com (organization MSP) from the fabric CA host and put under data/
+  - Note: in local setup (single machine tests), run `make artifacts-copy` instead of manual copying
+- Start the peer: `make peer0-up`
+- Init the channel and join peers: `make channel-create`.
 
 # Data folder
 
