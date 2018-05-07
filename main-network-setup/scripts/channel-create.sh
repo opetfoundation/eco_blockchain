@@ -29,11 +29,11 @@ log "Creating channel '$CHANNEL_NAME' on $ORDERER_HOST ..."
 peer channel create --logging-level=DEBUG -c $CHANNEL_NAME -f $CHANNEL_TX_FILE $ORDERER_CONN_ARGS
 
 # # Join peer to the channel
-# log "Peer $PEER_HOST is attempting to join channel '$CHANNEL_NAME' (attempt #${COUNT}) ..."
-# peer channel join -b $CHANNEL_NAME.block
+log "Peer $PEER_HOST is attempting to join channel '$CHANNEL_NAME' (attempt #${COUNT}) ..."
+peer channel join -b $CHANNEL_NAME.block
 
-# log "Updating anchor peers for $PEER_HOST ..."
-# peer channel update -c $CHANNEL_NAME -f $ANCHOR_TX_FILE $ORDERER_CONN_ARGS
+log "Updating anchor peers for $PEER_HOST ..."
+peer channel update -c $CHANNEL_NAME -f $ANCHOR_TX_FILE $ORDERER_CONN_ARGS
 
 # # Install chaincode
 # log "Installing chaincode on $PEER_HOST ..."
