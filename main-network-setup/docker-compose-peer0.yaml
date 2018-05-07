@@ -67,13 +67,12 @@ services:
       - 7051:7051
       - 7053:7053
     volumes:
-        - ./data/peer0/:/data
-        - ./data/peer0_production/:/var/hyperledger/production/
-        - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
-        - /var/run/:/host/var/run/
+        - ./data_peer0/:/data
+        - ./data_peer0/production/:/var/hyperledger/production/
+        - ./data_peer0/opet-ca-cert.pem:/data/opet-ca-cert.pem
+        - ./data_peer0/channel.tx:/data/channel.tx
         - ./scripts:/scripts
-        # - ./data/channel.tx:/data/channel.tx
-        # - /var/run/:/host/var/run/
+        - /var/run/:/host/var/run/
     depends_on:
       - couchdb0
     networks:
@@ -90,6 +89,6 @@ services:
     ports:
       - "5984:5984"
     volumes:
-        - ./data/couchdb0/:/opt/couchdb/data
+        - ./data_peer0/couchdb0/:/opt/couchdb/data
     networks:
       - opet-fabric-mainnet
