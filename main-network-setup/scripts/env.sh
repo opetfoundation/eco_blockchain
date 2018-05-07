@@ -43,14 +43,23 @@ function getOrgCACerts {
    fabric-ca-client getcacert -d -u https://$CA_HOST:7054 -M $ORG_MSP_DIR
    finishMSPSetup $ORG_MSP_DIR
 
+   switchToAdminIdentity
+}
+
+function switchToAdminIdentity {
    # switchToAdminIdentity
    export FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
    export FABRIC_CA_CLIENT_TLS_CERTFILES=$ORG_MSP_DIR/tlscacerts/ca-fabric-opetbot-com-7054.pem
    fabric-ca-client enroll -d -u https://$ORG_ADMIN_USER:$ORG_ADMIN_PASS@$CA_HOST:7054
-   # If admincerts are required in the MSP, copy the cert there now and to my local MSP also
+
+   ## ORG_MSP_DIR=/data/fabric.opetbot.com/msp
+   ## ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
+   ## ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
+
+   # Copy admincerts to local MSP
    mkdir -p $(dirname "${ORG_ADMIN_CERT}")
    cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
-   mkdir $ORG_ADMIN_HOME/msp/admincerts
+   mkdir -p $ORG_ADMIN_HOME/msp/admincerts
    cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_HOME/msp/admincerts
 }
 
@@ -119,17 +128,6 @@ function genClientTLSCert {
    cp /tmp/tls/signcerts/* $CERT_FILE
    cp /tmp/tls/keystore/* $KEY_FILE
    rm -rf /tmp/tls
-}
-
-
-function setupHosts {
-   if [ -e /etc/hosts.orginal ]; then
-     # If we have modified the original file already, restore it before
-     # we modify it again.
-     cp /etc/hosts.orginal /etc/hosts
-   fi
-   cp /etc/hosts /etc/hosts.orginal
-   cat $SCRIPT_PATH/hosts >> /etc/hosts
 }
 
 
