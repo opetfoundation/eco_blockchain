@@ -69,3 +69,30 @@ peer0-down:
 
 peer0-bash:
 	@$(DOCKER_COMPOSE_PEER0) exec peer0.fabric.opetbot.com bash
+
+peer0-channel-create:
+	@$(DOCKER_COMPOSE_PEER0) exec peer0.fabric.opetbot.com /scripts/channel-create.sh
+
+clean:
+	sudo rm -rf data_ca/
+	sudo rm -rf data_orderer/
+	sudo rm -rf data_peer0/
+	docker container rm ca_opet
+	docker container rm ca_opet_postgres
+
+artifacts-copy:
+	mkdir -p data_peer0
+	mkdir -p data_orderer
+	cp data_ca/opet-ca-cert.pem data_orderer/opet-ca-cert.pem
+	cp data_ca/genesis.block data_orderer/genesis.block
+	cp data_ca/opet-ca-cert.pem data_peer0/opet-ca-cert.pem
+	cp data_ca/channel.tx data_peer0/channel.tx
+	# See scripts/start-peer.sh
+	# Without this, the channel creation fails
+	# Note: copy from orderer also doesn't work
+	sudo cp -r data_ca/fabric.opetbot.com/ data_peer0/
+	sudo chown $(USER):$(USER) data_peer0/fabric.opetbot.com/
+
+view-genesis-block:
+	# View genesis.block content as json
+	cd ./scripts && ../fabric-samples/bin/configtxgen -inspectBlock ../data_orderer/genesis.block > block.json 

@@ -28,10 +28,20 @@ function setupPeer {
   fabric-ca-client enroll -d -u $ENROLLMENT_URL -M $CORE_PEER_MSPCONFIGPATH
   finishMSPSetup $CORE_PEER_MSPCONFIGPATH
 
-  # Check if we need the org amdin certificate
-  echo Get organization certificates and copy admin certificate to peer MSP
-  # Create organization MSP folder
-  getOrgCACerts
+  # When we enroll the org admin from the peer, like below, the channel creation fails with
+  #    Error: got unexpected status: BAD_REQUEST -- error authorizing update: error validating 
+  #    DeltaSet: policy for [Group]  /Channel/Application not satisfied: 
+  #    Failed to reach implicit threshold of 1 sub-policies, required 1 remaining
+  # # Check if we need the org amdin certificate
+  #   [msp] SatisfiesPrincipal -> DEBU 23e Checking if identity satisfies ADMIN role for OpetMSP
+  #   [cauthdsl] func2 -> DEBU 23f 0xc4201a4840 identity 0 does not satisfy principal: This identity is not an admin
+  #
+  # So for now instead of enrolling the organization admin on peer and getting certificates, we copy the
+  # organization MSP data from the CA host.
+  #
+  # echo Get organization certificates and copy admin certificate to peer MSP
+  # # Create organization MSP folder
+  # getOrgCACerts
   # We need to copy the admin certificate to orderer's MSP
   copyAdminCert ${CORE_PEER_MSPCONFIGPATH}
 
