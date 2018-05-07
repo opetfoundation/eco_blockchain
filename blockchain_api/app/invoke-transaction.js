@@ -69,7 +69,7 @@ var invokeChaincode = async function(peerNames, channelName, chaincodeName, fcn,
 				logger.info('invoke chaincode proposal was good');
 			} else {
 				logger.error('invoke chaincode proposal was bad');
-				return proposalResponses[i];
+				throw new Error(response_payloads[i]);
 			}
 			all_good = all_good & one_good;
 		}

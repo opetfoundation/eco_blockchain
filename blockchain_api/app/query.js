@@ -44,7 +44,7 @@ var queryChaincode = async function(peer, channelName, chaincodeName, args, fcn,
 			for (let i = 0; i < response_payloads.length; i++) {
 				logger.info('Chaincode query response: ' + response_payloads[i].toString('utf8'));
 			}
-			if (response_payloads[0].toString().includes("Error: 2 UNKNOWN: chaincode error (status: 500, message")){
+			if (response_payloads[0].toString().includes("UNKNOWN: chaincode error (status: 500, message")){
 				throw new Error(response_payloads[0]);
 			}
 			return response_payloads[0].toString('utf8');

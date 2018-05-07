@@ -21,13 +21,17 @@ type OpetCode struct {
 type User struct {
     Uid string `json:"UID"`
     Data map[string]string `json:"data"`
+    Documents []string `json:"documents"`
+}
+
+type Document struct {
+    Data map[string]interface{} `json:"data"`
 }
 
 const USER_KEY = "_USER_"
+const DOCUMENT_KEY = "__DOCUMENT__"
 
-// Init is called during chaincode instantiation to initialize any
-// data. Note that chaincode upgrade also calls this function to reset
-// or to migrate data.
+
 func (t *OpetCode) Init(stub shim.ChaincodeStubInterface) sc.Response {
     return shim.Success(nil)
 }
@@ -46,6 +50,10 @@ func (t *OpetCode) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
         return t.createUser(APIstub, args)
     } else if function == "retrieveUser" {
         return t.retrieveUser(APIstub, args)
+    } else if function == "createDocument" {
+        return t.createDocument(APIstub, args)
+    } else if function == "retrieveDocument" {
+        return t.retrieveDocument(APIstub, args)
     }
     return shim.Error("Invalid Smart Contract function name.")
 }
@@ -63,6 +71,17 @@ func (t *OpetCode) loadUser(APIstub shim.ChaincodeStubInterface, userKey string)
     }    
     _ = json.Unmarshal([]byte(user_json), &user)    
     return user, nil
+}
+
+func (t *OpetCode) loadDocument(APIstub shim.ChaincodeStubInterface, docKey string) (Document, error) {
+    doc_json, _ := APIstub.GetState(docKey)
+    var document Document
+
+    if doc_json == nil {
+        return document, errors.New("There is no document exist")
+    }    
+    _ = json.Unmarshal([]byte(doc_json), &document)    
+    return document, nil
 } 
 
 /*
@@ -114,6 +133,85 @@ func (t *OpetCode) retrieveUser(APIstub shim.ChaincodeStubInterface, args []stri
     user_json, _ := json.Marshal(user)
     fmt.Printf("%s \n", user_json)
     return shim.Success(user_json)
+}
+
+func (t *OpetCode) createDocument(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+
+    user_uid := args[0]
+    uid := args[1]
+    json_props := args[2]
+    doc_key, _ := APIstub.CreateCompositeKey(uid, []string{DOCUMENT_KEY})
+    user_key, _ := APIstub.CreateCompositeKey(user_uid, []string{USER_KEY})
+
+    if _, err := t.loadDocument(APIstub, doc_key); err == nil {
+        return shim.Error("Document already exists")
+    }
+
+    user, err := t.loadUser(APIstub, user_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s user doesn't not exist", user_uid))
+    }
+    user.Documents = append(user.Documents, uid)
+
+
+    new_doc := new(Document)
+    new_doc.Data = make(map[string]interface{})
+    err = json.Unmarshal([]byte(json_props), &new_doc.Data)
+    if err != nil {
+        return shim.Error("Can't parse json props")
+    }
+
+    new_doc_json, _ := json.Marshal(new_doc)
+    APIstub.PutState(doc_key, new_doc_json)
+
+    user_json, _ := json.Marshal(user)
+    APIstub.PutState(user_key, user_json)
+
+    return shim.Success(nil)
+}
+
+func (t *OpetCode) retrieveDocument(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+    user_uid := args[0]
+    doc_uid := args[1]
+
+    user_key, _ := APIstub.CreateCompositeKey(user_uid, []string{USER_KEY})
+    user, err := t.loadUser(APIstub, user_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s user doesn't not exist", user_uid))
+    }
+    found := false
+    for i := range user.Documents {
+    if user.Documents[i] == doc_uid {
+        found = true
+        break
+        }
+    }
+    if !found {
+        return shim.Error(fmt.Sprintf("The user: %s doesn't have document: %s", user_uid, doc_uid))
+    }
+
+
+
+    doc_key, _ := APIstub.CreateCompositeKey(doc_uid, []string{DOCUMENT_KEY})
+    doc, err := t.loadDocument(APIstub, doc_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s document does not exist", doc_uid))
+    }
+
+
+
+
+
+    doc_json, _ := json.Marshal(doc)
+    fmt.Printf("%s \n", doc_json)
+    return shim.Success(doc_json)
 }
 
 
