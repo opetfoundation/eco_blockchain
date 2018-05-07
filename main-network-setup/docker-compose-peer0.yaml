@@ -48,7 +48,7 @@ services:
       # the following setting starts chaincode containers on the same
       # bridge network as the peers
       # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=artifacts_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_opet-fabric-mainnet
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
@@ -92,3 +92,63 @@ services:
         - ./data_peer0/couchdb0/:/opt/couchdb/data
     networks:
       - opet-fabric-mainnet
+
+  peer0_tools:
+    container_name: channel_configuration
+    image: hyperledger/fabric-ca-tools
+    command: /bin/bash -c "sleep infinity & wait"
+    environment:
+      # Fabric client home is the same as peer home
+      - FABRIC_CA_CLIENT_HOME=/data
+      - FABRIC_CA_CLIENT_TLS_CERTFILES=/data/opet-ca-cert.pem
+      - PEER_NAME=peer0-opet
+      - PEER_HOME=/data
+      - PEER_HOST=peer0.fabric.opetbot.com
+      - CORE_PEER_ID=peer0-opet
+      # - CORE_PEER_ID=peer0.fabric.opetbot.com
+      - CORE_PEER_ADDRESS=peer0.fabric.opetbot.com:7051
+      - CORE_PEER_LOCALMSPID=OpetMSP
+      - CORE_PEER_MSPCONFIGPATH=/data/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_KEY_FILE=/data/tls/server.key
+      - CORE_PEER_TLS_CERT_FILE=/data/tls/server.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/data/opet-ca-cert.pem
+      - CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+      - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/data/opet-ca-cert.pem
+      - CORE_PEER_TLS_CLIENTCERT_FILE=/data/tls/peer0-opet-client.crt
+      - CORE_PEER_TLS_CLIENTKEY_FILE=/data/tls/peer0-opet-client.key
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.fabric.opetbot.com:7051
+      - ORG=opet
+      - ORG_ADMIN_CERT=/data/fabric.opetbot.com/msp/admincerts/cert.pem
+      # The following setting skips the gossip handshake since we are
+      # are not doing mutual TLS
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      # Peer needs access to docker to be able to start the
+      # chaincode container.
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_opet-fabric-mainnet
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      # These should be secified in the env file.
+    env_file:
+      # Secrets
+      - "${ENV_FILE}"
+    working_dir: /data
+    volumes:
+      - ./data_peer0:/data
+      - ./scripts:/scripts
+      - ../blockchain_api/artifacts/src/chaincode:/opt/gopath/src/chaincode
+      - /var/run/:/host/var/run/
+    networks:
+      - opet-fabric-mainnet
+    depends_on:
+      - peer0.fabric.opetbot.com

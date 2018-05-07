@@ -71,7 +71,10 @@ peer0-bash:
 	@$(DOCKER_COMPOSE_PEER0) exec peer0.fabric.opetbot.com bash
 
 peer0-channel-create:
-	@$(DOCKER_COMPOSE_PEER0) exec peer0.fabric.opetbot.com /scripts/channel-create.sh
+	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools /scripts/channel-create.sh
+
+peer0-tools-bash:
+	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools bash
 
 clean:
 	sudo rm -rf data_ca/

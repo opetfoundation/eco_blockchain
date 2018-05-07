@@ -36,13 +36,13 @@ log "Updating anchor peers for $PEER_HOST ..."
 peer channel update -c $CHANNEL_NAME -f $ANCHOR_TX_FILE $ORDERER_CONN_ARGS
 
 # # Install chaincode
-# log "Installing chaincode on $PEER_HOST ..."
-# peer chaincode install -n opet -v 1.0 -p /chaincode/opetbot
+log "Installing chaincode on $PEER_HOST ..."
+# note: the install adds /opt/gopath/src before the path we specify here
+peer chaincode install -n opet -v 1.0 -p chaincode/opetbot
 
-# # Instantiate chaincode
-# makePolicy
-# log "Instantiating chaincode on $PEER_HOST ..."
-# peer chaincode instantiate -C $CHANNEL_NAME -n opet -v 1.0 -c '{"Args":["init","initLedger"]}' -P "'OpetMSP.peer')" $ORDERER_CONN_ARGS
+# Instantiate chaincode
+log "Instantiating chaincode on $PEER_HOST ..."
+peer chaincode instantiate -C $CHANNEL_NAME -n opet -v 1.0 -c '{"Args":["init","initLedger"]}' -P "OR ('OpetMSP.peer')" $ORDERER_CONN_ARGS
 
 # # # Query chaincode
 # # switchToUserIdentity
