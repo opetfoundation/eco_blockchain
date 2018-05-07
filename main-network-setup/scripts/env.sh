@@ -18,7 +18,7 @@ GENESIS_BLOCK_FILE=/data/genesis.block
 CHANNEL_TX_FILE=/data/channel.tx
 ANCHOR_TX_FILE=/data/fabric.opetbot.com/anchors.tx
 # Name of the channel
-CHANNEL_NAME=opet_channel
+CHANNEL_NAME=opetchannel
 
 # Create the TLS directories of the MSP folder if they don't exist.
 # The fabric-ca-client should do this.
