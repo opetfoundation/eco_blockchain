@@ -1,0 +1,28 @@
+version: '2'
+
+networks:
+  opet-fabric-mainnet:
+
+services:
+  api:
+    build: 
+      context: ../blockchain_api
+      dockerfile: artifacts/Dockerfile.mainnet
+    volumes:
+      # - ../blockchain_api:/code
+      - ./data_api:/data
+    environment:
+      - TARGET_NETWORK=docker
+      - HOST=0.0.0.0
+      - PEER_HOST=peer0.fabric.opetbot.com
+      - CHANNEL_NAME=opetchannel
+      - CHAINCODE_NAME=opet
+    env_file:
+      # Secrets
+      - "${ENV_FILE}"
+    # command: bash -c "PORT=4000 node app"
+    command: /bin/bash -c "sleep infinity & wait"
+    ports:
+      - 4000:4000
+    networks:
+      - opet-fabric-mainnet

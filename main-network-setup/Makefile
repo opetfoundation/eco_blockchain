@@ -1,13 +1,14 @@
 DOCKER_COMPOSE_FABRIC_CA=ENV_FILE=./.env.ca docker-compose -f docker-compose-fabric-ca.yaml
 DOCKER_COMPOSE_ORDERER=ENV_FILE=./.env.orderer docker-compose -f docker-compose-orderer.yaml
 DOCKER_COMPOSE_PEER0=ENV_FILE=./.env.peer0 docker-compose -f docker-compose-peer0.yaml
+DOCKER_COMPOSE_API=ENV_FILE=./.env.peer0 docker-compose -f docker-compose-api.yaml
 
 fabric-ca-up:
 	@$(DOCKER_COMPOSE_FABRIC_CA) up -d
 
 fabric-ca-up-test:
 	# Start in non-daemon mode
-	@$(DOCKER_COMPOSE_FABRIC_CA) up
+	@$(DOCKER_COMPOSE_FABRIC_CA) up --build
 
 fabric-ca-down:
 	@$(DOCKER_COMPOSE_FABRIC_CA) down
@@ -75,6 +76,15 @@ peer0-channel-create:
 
 peer0-tools-bash:
 	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools bash
+
+api-up:
+	@$(DOCKER_COMPOSE_API) up -d
+
+api-up-test:
+	@$(DOCKER_COMPOSE_API) up --build
+
+api-bash:
+	@$(DOCKER_COMPOSE_API) exec api bash
 
 clean:
 	sudo rm -rf data_ca/
