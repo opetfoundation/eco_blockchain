@@ -20,8 +20,8 @@ services:
     env_file:
       # Secrets
       - "${ENV_FILE}"
-    # command: bash -c "PORT=4000 node app"
-    command: /bin/bash -c "sleep infinity & wait"
+    command: bash -c "PORT=4000 node app"
+    # command: /bin/bash -c "sleep infinity & wait"
     ports:
       - 4000:4000
     networks:
