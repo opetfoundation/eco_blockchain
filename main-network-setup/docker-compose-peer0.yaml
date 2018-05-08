@@ -48,6 +48,8 @@ services:
       # the following setting starts chaincode containers on the same
       # bridge network as the peers
       # https://docs.docker.com/compose/networking/
+      # NOTE: the COMPOSE_PROJECT_NAME in .env file should be set accordingly,
+      # it defines the prefix before the network name (`net` in this case)
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_opet-fabric-mainnet
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
@@ -94,7 +96,7 @@ services:
       - opet-fabric-mainnet
 
   peer0_tools:
-    container_name: channel_configuration
+    container_name: peer0_tools
     image: hyperledger/fabric-ca-tools
     command: /bin/bash -c "sleep infinity & wait"
     environment:

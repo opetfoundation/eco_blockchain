@@ -34,7 +34,7 @@ The setup procedure is described below.
 - Copy fabric.opetbot.com (organization MSP) from the fabric CA host and put under data/
   - Note: in local setup (single machine tests), run `make artifacts-copy` instead of manual copying
 - Start the peer: `make peer0-up`
-- Init the channel and join peers: `make channel-create`.
+- Init the channel and join peers: `make peer0-channel-create`.
 
 # Data folder
 

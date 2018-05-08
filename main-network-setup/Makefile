@@ -80,8 +80,10 @@ clean:
 	sudo rm -rf data_ca/
 	sudo rm -rf data_orderer/
 	sudo rm -rf data_peer0/
-	docker container rm ca_opet
-	docker container rm ca_opet_postgres
+	docker container rm ca_opet ca_opet_postgres
+	docker container rm artifacts_gen
+	docker container rm orderer_opet
+	docker container rm peer0_opet couchdb0 peer0_tools
 
 artifacts-copy:
 	mkdir -p data_peer0
