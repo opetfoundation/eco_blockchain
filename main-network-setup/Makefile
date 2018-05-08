@@ -108,6 +108,12 @@ artifacts-copy:
 	sudo cp -r data_ca/fabric.opetbot.com/ data_peer0/
 	sudo chown $(USER):$(USER) data_peer0/fabric.opetbot.com/
 
+api-artifacts-copy:
+	mkdir -p data_api
+	sudo cp data_ca/fabric-ca-server/tls-cert.pem data_api/ca.fabric.opetbot.com-tls-ca.crt
+	sudo cp data_peer0/msp/tlscacerts/ca-fabric-opetbot-com-7054.pem data_api/peer0.fabric.opetbot.com-tls-ca.crt
+	sudo cp data_orderer/msp/tlscacerts/ca-fabric-opetbot-com-7054.pem data_api/orderer.fabric.opetbot.com-tls-ca.crt
+
 view-genesis-block:
 	# View genesis.block content as json
 	cd ./scripts && ../fabric-samples/bin/configtxgen -inspectBlock ../data_orderer/genesis.block > block.json 
