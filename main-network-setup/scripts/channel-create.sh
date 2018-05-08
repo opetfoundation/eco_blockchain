@@ -9,17 +9,7 @@ ORDERER_PORT_ARGS="-o $ORDERER_HOST:7050 --tls --cafile $FABRIC_CA_CLIENT_TLS_CE
 ORDERER_CONN_ARGS="$ORDERER_PORT_ARGS --keyfile $CORE_PEER_TLS_CLIENTKEY_FILE --certfile $CORE_PEER_TLS_CLIENTCERT_FILE"
 
 # Create the channel
-# CA_MSP_DIR=/data/ca.fabric.opetbot.com/msp
-# CA_ADMIN_HOME=/data/ca.fabric.opetbot.com/admin
-# CA_ADMIN_CERT=${CA_MSP_DIR}/admincerts/cert.pem
-# switchToAdminIdentity
-# export FABRIC_CA_CLIENT_HOME=$CA_ADMIN_HOME
-# export FABRIC_CA_CLIENT_TLS_CERTFILES=$ORG_MSP_DIR/tlscacerts/ca-fabric-opetbot-com-7054.pem
-# fabric-ca-client enroll -d -u https://$CA_ADMIN_USER:$CA_ADMIN_PASS@$CA_HOST:7054
-# mkdir -p $CA_ADMIN_HOME/msp/admincerts
-# cp $CA_ADMIN_HOME/msp/signcerts/* $CA_ADMIN_HOME/msp/admincerts
-# Switch following peer commands to admin.
-# export CORE_PEER_MSPCONFIGPATH=/data/ca.org/admin/msp
+
 # Switch following peer commands to admin.
 # export CORE_PEER_MSPCONFIGPATH=$CA_ADMIN_HOME/msp
 export CORE_PEER_MSPCONFIGPATH=$ORG_ADMIN_HOME/msp
