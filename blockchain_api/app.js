@@ -62,11 +62,16 @@ app.use(bodyParser.urlencoded({
 }));
 // set secret variable
 app.set('secret', 'thisismysecret');
-app.use(function(req, res, next) {
-	logger.debug(' ------>>>>>> new request for %s',req.originalUrl);
-	req.username = caUser;
-	req.orgname = caOrg;
-	return next();
+app.use(async function(req, res, next) {
+	try {
+		var user = await enrollApiUser.enrollApiUser();
+		logger.debug(' ------>>>>>> new request for %s',req.originalUrl);
+		req.username = caUser;
+		req.orgname = caOrg;
+		next();
+	} catch(error) {
+		next(error);
+	}
 });
 
 
@@ -87,7 +92,6 @@ function getErrorMessage(field) {
 }
 
 app.post('/users', async function(req, res) {
-	var user = await enrollApiUser.enrollApiUser();
 	logger.debug('==================== INVOKE ON CHAINCODE ==================');
 	var data = JSON.stringify(req.body.data);
 	logger.debug('End point : /users');
