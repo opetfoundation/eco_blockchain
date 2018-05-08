@@ -30,7 +30,7 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/data/tls/server.key
       - CORE_PEER_TLS_CERT_FILE=/data/tls/server.crt
       - CORE_PEER_TLS_ROOTCERT_FILE=/data/opet-ca-cert.pem
-      - CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+      - CORE_PEER_TLS_CLIENTAUTHREQUIRED=false
       - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/data/opet-ca-cert.pem
       - CORE_PEER_TLS_CLIENTCERT_FILE=/data/tls/peer0-opet-client.crt
       - CORE_PEER_TLS_CLIENTKEY_FILE=/data/tls/peer0-opet-client.key
