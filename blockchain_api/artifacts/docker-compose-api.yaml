@@ -10,6 +10,8 @@ services:
       - PEER_HOST=peer0.org1.example.com
       - CHANNEL_NAME=mychannel
       - CHAINCODE_NAME=mycc11
+      - FABRIC_CA_API_USER=user1
+      - FABRIC_CA_API_ORG=Org1
     command: bash -c "node start_chaincodes.js && PORT=4000 node app"
     ports:
       - 4000:4000

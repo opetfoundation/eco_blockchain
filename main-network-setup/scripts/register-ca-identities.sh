@@ -47,8 +47,8 @@ function registerOrganizationAdmin {
    # The peer organization admin
    # fabric-ca-client register -d --id.name $ORG_ADMIN_USER --id.secret $ORG_ADMIN_PASS --id.attrs "hf.Registrar.Roles=client,hf.Registrar.Attributes=*,hf.Revoker=true,hf.GenCRL=true,admin=true:ecert,abac.init=true:ecert"
 
-   # log "Registering user identity with $CA_NAME"
-   # fabric-ca-client register -d --id.name $USER_NAME --id.secret $USER_PASS
+   log "Registering user identity with $CA_NAME"
+   fabric-ca-client register -d --id.name $FABRIC_CA_API_USER --id.secret $FABRIC_CA_API_PASS
 }
 
 
