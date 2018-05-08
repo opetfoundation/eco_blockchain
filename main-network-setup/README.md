@@ -40,6 +40,15 @@ Also the monolith docker compose config was split to separate setups for CA, ord
 - Start the peer: `make peer0-up`
 - Init the channel and join peers: `make peer0-channel-create`.
 
+[API host]
+- Edit the `.env.api` file, set passwords
+- Copy tls certificates:
+ - From CA: `data_ca/fabric-ca-server/tls-cert.pem` to `data_api/ca.fabric.opetbot.com-tls-ca.crt`
+ - From Peer0: `data_peer0/msp/tlscacerts/ca-fabric-opetbot-com-7054.pem` to `data_api/peer0.fabric.opetbot.com-tls-ca.crt`
+ - From Orderer: `data_orderer/msp/tlscacerts/ca-fabric-opetbot-com-7054.pem` to `data_api/orderer.fabric.opetbot.com-tls-ca.crt`
+ - Note: locally, copying can be done with `make api-artifacts-copy`
+- Start the API: `make api-up`
+
 # Data folders
 
 The data folders (data_ca, data_orderer, data_peer0, ...) on each instance contains the MSP configuration and data used by network nodes.
