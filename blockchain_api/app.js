@@ -83,8 +83,8 @@ function getErrorMessage(field) {
 }
 
 app.post('/users', async function(req, res) {
-	logger.debug('==================== INVOKE ON CHAINCODE ==================');
-	var data = JSON.stringify(req.body.data);
+	logger.debug('==================== CREATE USER ==================');
+	var data = JSON.stringify(req.body);
 	logger.debug('End point : /users');
 	if (!data) {
 		res.json(getErrorMessage('\'data\''));
@@ -98,15 +98,20 @@ app.post('/users', async function(req, res) {
 	logger.debug('fcn  : ' + fcn);
 	logger.debug('args  : ' + args);
 
-
-	await invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname);
-	let message = '{"data":{"UID":"{' + uid +  '}"}}'
-	res.send(message);
+	try{
+		await invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname);
+		let message = '{"data":{"UID":"' + uid +  '"}}'
+		res.send(message);
+	}
+	catch(err){
+		res.send('{"error": "' + err.message + '" }');
+	}
+	
 });
 
 // Invoke transaction on chaincode on target peers
 app.get('/users/:uid', async function(req, res) {
-	logger.debug('==================== QUERY ON CHAINCODE ==================');
+	logger.debug('==================== RETRIEVE USER ==================');
 	logger.debug('End point : /users/{xxx}');
 
 	var uid = req.params.uid;
@@ -132,6 +137,61 @@ app.get('/users/:uid', async function(req, res) {
 	
 	
 });
+
+app.post('/documents/:user_uid', async function(req, res) {
+	logger.debug('==================== CREATE DOCUMENT ==================');
+	var user_uid = req.params.user_uid;
+	var data = JSON.stringify(req.body);
+	logger.debug('End point : /documents/:user_uid');
+	if (!data) {
+		res.json(getErrorMessage('\'data\''));
+		return;
+	}
+	var doc_uid = uuidv4().toString();
+	var fcn = 'createDocument';
+	var args = [user_uid, doc_uid, data];
+	logger.debug('channelName  : ' + channelName);
+	logger.debug('chaincodeName : ' + chaincodeName);
+	logger.debug('fcn  : ' + fcn);
+	logger.debug('args  : ' + args);
+
+	try{
+		await invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname);
+		let message = '{"data":{"UID":"' + doc_uid +  '"}}'
+		res.send(message);
+	} catch(err) {
+		res.send('{"error": "' + err.message + '" }');
+	}
+	
+});
+
+// Invoke transaction on chaincode on target peers
+app.get('/documents/:user_uid/:doc_uid', async function(req, res) {
+	logger.debug('==================== RETRIEVE DOCUMENT ==================');
+	logger.debug('End point : /documents/:user_uid/:doc_uid');
+
+	var user_uid = req.params.user_uid;
+	var doc_uid = req.params.doc_uid;
+	var fcn = 'retrieveDocument';
+	var args = [user_uid, doc_uid];
+	logger.debug('channelName  : ' + channelName);
+	logger.debug('chaincodeName : ' + chaincodeName);
+	logger.debug('fcn  : ' + fcn);
+	logger.debug('args  : ' + args);
+	if (!doc_uid) {
+		res.json(getErrorMessage('\'args\''));
+		return;
+	}
+	try{
+		let message = await query.queryChaincode(peers[0], channelName, chaincodeName, args, fcn, req.username, req.orgname);
+		res.send(message);
+	} catch(err) {
+		res.send('{"error": "' + err.message + '" }');
+	}
+	
+	
+});
+
 // Query on chaincode on target peers
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, res) {
 	logger.debug('==================== QUERY BY CHAINCODE ==================');
