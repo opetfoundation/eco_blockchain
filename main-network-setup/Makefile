@@ -90,6 +90,7 @@ clean:
 	sudo rm -rf data_ca/
 	sudo rm -rf data_orderer/
 	sudo rm -rf data_peer0/
+	sudo rm -rf data_api/
 	docker container rm ca_opet ca_opet_postgres
 	docker container rm artifacts_gen
 	docker container rm orderer_opet
