@@ -33,7 +33,6 @@ peer chaincode install -n opet -v 1.0 -p chaincode/opetbot
 # Instantiate chaincode
 log "Instantiating chaincode on $PEER_HOST ..."
 # By default fabric will generate an endorsement policy equivalent to “any member from the organizations currently in the channel”
-# peer chaincode instantiate -C $CHANNEL_NAME -n opet -v 1.0 -c '{"Args":["init","initLedger"]}' -P "OR ('OpetMSP.peer')" $ORDERER_CONN_ARGS
 peer chaincode instantiate -C $CHANNEL_NAME -n opet -v 1.0 -c '{"Args":["init","initLedger"]}' $ORDERER_CONN_ARGS
 
 # # # Query chaincode

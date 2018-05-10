@@ -74,6 +74,9 @@ peer0-bash:
 peer0-channel-create:
 	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools /scripts/channel-create.sh
 
+peer0-chaincode-upgrade:
+	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools /scripts/chaincode-upgrade.sh
+
 peer0-tools-bash:
 	@$(DOCKER_COMPOSE_PEER0) exec peer0_tools bash
 
