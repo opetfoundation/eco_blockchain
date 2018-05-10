@@ -6,13 +6,16 @@ require('./config.js');
 var hfc = require('fabric-client');
 
 var helper = require('./app/helper.js');
-// var host = process.env.HOST || hfc.getConfigSetting('host');
-// var port = process.env.PORT || hfc.getConfigSetting('port');
 var caOrg = process.env.FABRIC_CA_API_ORG;
 var caUser = process.env.FABRIC_CA_API_USER;
 var caPass = process.env.FABRIC_CA_API_PASS;
 
-
+/*
+ * Enroll the API user with Fabric CA.
+ *
+ * Used for main network setup to enroll the API user when the API is first started.
+ * On following runs just makes sure that the user is enrolled.
+ */
 var enrollApiUser = async function() {
     logger.info('Create CA Client');
     var client = await helper.getClientForOrg(caOrg);
@@ -24,11 +27,6 @@ var enrollApiUser = async function() {
     } else {
         logger.info('Enrolling API user');
         let caClient = client.getCertificateAuthority();
-        // let secret = await caClient.enroll({
-        //  enrollmentID: caUser,
-        //  enrollmentSecret: caPass,
-        // });
-        // logger.debug('Successfully enrolled the API user');
         user = await client.setUserContext({username:caUser, password:caPass});
         logger.debug('Successfully enrolled username %s  and setUserContext on the client object', caUser);
     }
@@ -39,8 +37,4 @@ var enrollApiUser = async function() {
     }
 }
 
-// enrollApiUser().then(function () {
-//     logger.info("API user has been enrolled");
-//     process.exit()
-// });
 exports.enrollApiUser = enrollApiUser;
