@@ -94,7 +94,7 @@ clean:
 	sudo rm -rf data_orderer/
 	sudo rm -rf data_peer0/
 	sudo rm -rf data_api/
-	docker container rm $(docker container ps -aq)
+	docker container rm $$(docker container ps -aq)
 
 artifacts-copy:
 	mkdir -p data_peer0
