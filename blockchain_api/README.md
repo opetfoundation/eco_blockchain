@@ -20,3 +20,5 @@ docker-compose -f artifacts/docker-compose-api.yaml up
 Note: to cleanup containers from previous runs, also the `docker container rm $(docker container ps -aq)` command may be useful.
 
 There are some API call examples in the [api_call_samples_curl.sh](./api_call_samples_curl.sh) script.
+
+Note: if you get the `Failed to load user "user1" from local key value store. Error: Private key missing from key store. Can not establish the signing identity for user user1` error, execute the `sudo rm -rf ./fabric-client-kv-org1/` command to cleanup from the previous run.
