@@ -18,3 +18,5 @@ docker-compose -f artifacts/docker-compose-api.yaml up
 ```
 
 Note: to cleanup containers from previous runs, also the `docker container rm $(docker container ps -aq)` command may be useful.
+
+There are some API call examples in the [api_call_samples_curl.sh](./api_call_samples_curl.sh) script.
