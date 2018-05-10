@@ -40,6 +40,11 @@ Also the monolith docker compose config was split to separate setups for CA, ord
 - Start the peer: `make peer0-up`
 - Init the channel and join peers: `make peer0-channel-create`.
 
+When the new version of the chaincode is available, it needs to be installed and upgraded.
+This can be done using the [chaincode-upgrade](./main-network-setup/scripts/chaincode-upgrade.sh) script.
+See also the usage example in the [Makefile](./main-network-setup/Makefile), the `peer0-chaincode-upgrade` command.
+
+
 [API host]
 - Edit the `.env.api` file, set passwords
 - Copy tls certificates:
