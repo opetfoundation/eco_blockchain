@@ -11,8 +11,15 @@ else
 	file = util.format(file, '');
 // indicate to the application where the setup file is located so it able
 // to have the hfc load it to initalize the fabric client instance
-hfc.setConfigSetting('network-connection-profile-path',path.join(__dirname, 'artifacts' ,file));
-hfc.setConfigSetting('Org1-connection-profile-path',path.join(__dirname, 'artifacts', 'org1.yaml'));
-hfc.setConfigSetting('Org2-connection-profile-path',path.join(__dirname, 'artifacts', 'org2.yaml'));
-// some other settings the application might need to know
-hfc.addConfigFile(path.join(__dirname, 'config.json'));
+if (env != 'mainnet') {
+	hfc.setConfigSetting('network-connection-profile-path',path.join(__dirname, 'artifacts' ,file));
+	hfc.setConfigSetting('Org1-connection-profile-path',path.join(__dirname, 'artifacts', 'org1.yaml'));
+	hfc.setConfigSetting('Org2-connection-profile-path',path.join(__dirname, 'artifacts', 'org2.yaml'));
+	// some other settings the application might need to know
+	hfc.addConfigFile(path.join(__dirname, 'config.json'));
+} else {
+	hfc.setConfigSetting('network-connection-profile-path',path.join(__dirname, 'artifacts' ,file));
+	hfc.setConfigSetting('Opet-connection-profile-path',path.join(__dirname, 'artifacts', 'opet.yaml'));
+	// some other settings the application might need to know
+	hfc.addConfigFile(path.join(__dirname, 'config-mainnet.json'));
+}

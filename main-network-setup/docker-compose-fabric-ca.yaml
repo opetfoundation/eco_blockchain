@@ -35,7 +35,7 @@ services:
     # command: sh -c 'fabric-ca-server start -b $$FABRIC_CA_USER -d'
     command: /bin/bash -c '/scripts/start-root-ca.sh'
     volumes:
-      - ./data:/data
+      - ./data_ca:/data
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet
@@ -44,12 +44,13 @@ services:
 
   postgres:
     restart: always
+    container_name: ca_opet_postgres
     image: postgres:10
     env_file:
       # Secrets: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
       - "${ENV_FILE}"
     volumes:
-      - ./data/fabric-ca-postgresql:/var/lib/postgresql/data
+      - ./data_ca/fabric-ca-postgresql:/var/lib/postgresql/data
     networks:
       - opet-fabric-mainnet
 
@@ -58,7 +59,7 @@ services:
     image: hyperledger/fabric-ca-tools
     command: /bin/bash -c "sleep infinity & wait"
     volumes:
-      - ./data:/data
+      - ./data_ca:/data
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet

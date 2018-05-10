@@ -1,0 +1,8 @@
+{
+   "host":"localhost",
+   "port":"4000",
+   "jwt_expiretime": "36000",
+   "channelName":"opetchannel",
+   "CC_SRC_PATH":"../artifacts",
+   "eventWaitTime":"30000"
+}

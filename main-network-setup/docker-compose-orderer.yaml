@@ -22,7 +22,7 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/data/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OpetOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPID=OpetMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/data/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/data/tls/server.key
@@ -37,10 +37,10 @@ services:
     ports:
       - 7050:7050
     volumes:
-      - ./data/orderer/:/data
-      - ./data/orderer_production/:/var/hyperledger/production
-      - ./data/opet-ca-cert.pem:/data/opet-ca-cert.pem
-      - ./data/genesis.block:/data/genesis.block
+      - ./data_orderer/:/data
+      - ./data_orderer/production/:/var/hyperledger/production
+      # - ./data_orderer/opet-ca-cert.pem:/data/opet-ca-cert.pem
+      - ./data_orderer/genesis.block:/data/genesis.block
       - ./scripts:/scripts
     networks:
       - opet-fabric-mainnet

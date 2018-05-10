@@ -39,12 +39,16 @@ var install = require('./app/install-chaincode.js');
 var instantiate = require('./app/instantiate-chaincode.js');
 var invoke = require('./app/invoke-transaction.js');
 var query = require('./app/query.js');
+var enrollApiUser = require('./enroll-api-user.js');
 var host = process.env.HOST || hfc.getConfigSetting('host');
 var port = process.env.PORT || hfc.getConfigSetting('port');
 
 var peers = [process.env.PEER_HOST];
 var chaincodeName = process.env.CHAINCODE_NAME;
 var channelName = process.env.CHANNEL_NAME;
+var caUser = process.env.FABRIC_CA_API_USER;
+var caOrg = process.env.FABRIC_CA_API_ORG;
+
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATONS ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,11 +62,16 @@ app.use(bodyParser.urlencoded({
 }));
 // set secret variable
 app.set('secret', 'thisismysecret');
-app.use(function(req, res, next) {
-	logger.debug(' ------>>>>>> new request for %s',req.originalUrl);
-	req.username = 'user1';
-	req.orgname = 'Org1';
-	return next();
+app.use(async function(req, res, next) {
+	try {
+		var user = await enrollApiUser.enrollApiUser();
+		logger.debug(' ------>>>>>> new request for %s',req.originalUrl);
+		req.username = caUser;
+		req.orgname = caOrg;
+		next();
+	} catch(error) {
+		next(error);
+	}
 });
 
 
@@ -134,8 +143,8 @@ app.get('/users/:uid', async function(req, res) {
 	} catch(err) {
 		res.send('{"error": "' + err.message + '" }');
 	}
-	
-	
+
+
 });
 
 app.post('/documents/:user_uid', async function(req, res) {
