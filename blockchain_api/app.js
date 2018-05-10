@@ -22,9 +22,6 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var util = require('util');
 var app = express();
-var expressJWT = require('express-jwt');
-var jwt = require('jsonwebtoken');
-var bearerToken = require('express-bearer-token');
 var cors = require('cors');
 var uuidv4 = require('uuid/v4');
 
