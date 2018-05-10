@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Upgrade the chaincode to the new version.
+# See the ../Makefile for usage example.
 
 set -e
 

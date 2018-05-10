@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Copyright IBM Corp. All Rights Reserved.
+# Setup and start the peer.
 #
-# SPDX-License-Identifier: Apache-2.0
-#
+# This is a bootstrap script for the peer docker container,
+# see the ../docker-compose-peer0.yaml config.
 
 set -e
 
@@ -28,7 +28,7 @@ function setupPeer {
   fabric-ca-client enroll -d -u $ENROLLMENT_URL -M $CORE_PEER_MSPCONFIGPATH
   finishMSPSetup $CORE_PEER_MSPCONFIGPATH
 
-  # When we enroll the org admin from the peer, like below, the channel creation fails with
+  # When we enroll the org admin from the peer, like below, the channel creation later fails with
   #    Error: got unexpected status: BAD_REQUEST -- error authorizing update: error validating 
   #    DeltaSet: policy for [Group]  /Channel/Application not satisfied: 
   #    Failed to reach implicit threshold of 1 sub-policies, required 1 remaining
@@ -42,7 +42,7 @@ function setupPeer {
   # echo Get organization certificates and copy admin certificate to peer MSP
   # # Create organization MSP folder
   # getOrgCACerts
-  # We need to copy the admin certificate to orderer's MSP
+  # We need to copy the admin certificate to peer's MSP
   copyAdminCert ${CORE_PEER_MSPCONFIGPATH}
 
   touch $PEER_HOME/setup.done

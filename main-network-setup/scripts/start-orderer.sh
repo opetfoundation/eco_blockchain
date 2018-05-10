@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Copyright IBM Corp. All Rights Reserved.
+# Setup and start the orderer.
 #
-# SPDX-License-Identifier: Apache-2.0
-#
+# This is a bootstrap script for the orderer docker container,
+# see the ../docker-compose-orderer.yaml config.
 
 set -e
 
@@ -11,8 +11,6 @@ source $(dirname "$0")/env.sh
 
 
 function setupOrderer {
-  # setupHosts
-
   echo Enroll to get orderer TLS cert using the tls profile
   ENROLLMENT_URL=https://$ORDERER_USER:$ORDERER_PASS@$CA_HOST:7054
   ORDERER_HOST=orderer.fabric.opetbot.com
