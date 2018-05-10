@@ -1,17 +1,6 @@
 'use strict';
 var log4js = require('log4js');
 var logger = log4js.getLogger('SampleWebApp');
-var express = require('express');
-var session = require('express-session');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var http = require('http');
-var util = require('util');
-var app = express();
-var expressJWT = require('express-jwt');
-var jwt = require('jsonwebtoken');
-var bearerToken = require('express-bearer-token');
-var cors = require('cors');
 
 require('./config.js');
 var hfc = require('fabric-client');
@@ -21,17 +10,18 @@ var createChannel = require('./app/create-channel.js');
 var join = require('./app/join-channel.js');
 var install = require('./app/install-chaincode.js');
 var instantiate = require('./app/instantiate-chaincode.js');
-var invoke = require('./app/invoke-transaction.js');
-var query = require('./app/query.js');
-var host = process.env.HOST || hfc.getConfigSetting('host');
-var port = process.env.PORT || hfc.getConfigSetting('port');
+
 var peers = [process.env.PEER_HOST];
 var chaincodeName = process.env.CHAINCODE_NAME || 'mychannel';
 var channelName = process.env.CHANNEL_NAME || 'mycc11';
 var channelConfigPath = process.env.CHANNEL_CONFIG_PATH || "../artifacts/channel/mychannel.tx";
 var chaincodePath = process.env.CHAINCODE_PATH || 'chaincode/opetbot';
 
-
+/*
+ * Initialize the dev mode network:
+ * register the API user with CA, create the channel, join the peer to the channel,
+ * install and instantiate the chaincode.
+ */
 var initFunction = async function() {
 	var username = 'user1';
 	var orgname = 'Org1';
@@ -47,7 +37,7 @@ var initFunction = async function() {
 	}
 	try {
 		logger.info('<<<<<<<<<<<<<<<<< C R E A T E  C H A N N E L >>>>>>>>>>>>>>>>>');;
-		
+
 		logger.debug('Channel name : ' + channelName);
 		logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/mychannel.tx
 		await createChannel.createChannel(channelName, channelConfigPath, username, orgname);
@@ -57,15 +47,11 @@ var initFunction = async function() {
 		logger.debug(err);
 		logger.debug("Possibel channel is already created");
 	}
-	
-
-	
 
 	logger.info('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
 	var peers = ["peer0.org1.example.com","peer1.org1.example.com"]
 	let message = await join.joinChannel(channelName, peers, username, orgname);
 	// logger.info(message);
-
 
 	logger.debug('==================== INSTALL CHAINCODE ==================');
 	var chaincodeVersion = '0';
@@ -75,7 +61,9 @@ var initFunction = async function() {
 	logger.debug('chaincodePath  : ' + chaincodePath);
 	logger.debug('chaincodeVersion  : ' + chaincodeVersion);
 	logger.debug('chaincodeType  : ' + chaincodeType);
-	await install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, chaincodeType, username, orgname);
+	await install.installChaincode(
+		peers, chaincodeName, chaincodePath,
+		chaincodeVersion, chaincodeType, username, orgname);
 
 	logger.debug('==================== INSTANTIATE CHAINCODE ==================');
 	var fcn = 'initLedger';
@@ -83,7 +71,9 @@ var initFunction = async function() {
 	logger.debug('fcn  : ' + fcn);
 	logger.debug('args  : ' + args);
 
-	await instantiate.instantiateChaincode(peers, channelName, chaincodeName, chaincodeVersion, chaincodeType, fcn, args, username, orgname);
+	await instantiate.instantiateChaincode(
+		peers, channelName, chaincodeName,
+		chaincodeVersion, chaincodeType, fcn, args, username, orgname);
 }
 
 initFunction().then(function () {
