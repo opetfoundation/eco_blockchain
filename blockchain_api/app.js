@@ -200,6 +200,7 @@ app.get('/documents/:user_uid/:doc_uid', async function(req, res) {
 });
 
 // Query on chaincode on target peers
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, res) {
 	logger.debug('==================== QUERY BY CHAINCODE ==================');
 	var channelName = req.params.channelName;
@@ -238,6 +239,7 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, 
 });
 
 //  Query Get Block by BlockNumber
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/blocks/:blockId', async function(req, res) {
 	logger.debug('==================== GET BLOCK BY NUMBER ==================');
 	let blockId = req.params.blockId;
@@ -255,6 +257,7 @@ app.get('/channels/:channelName/blocks/:blockId', async function(req, res) {
 });
 
 // Query Get Transaction by Transaction ID
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) {
 	logger.debug('================ GET TRANSACTION BY TRANSACTION_ID ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -270,6 +273,7 @@ app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) 
 });
 
 // Query Get Block by Hash
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/blocks', async function(req, res) {
 	logger.debug('================ GET BLOCK BY HASH ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -285,6 +289,7 @@ app.get('/channels/:channelName/blocks', async function(req, res) {
 });
 
 //Query for Channel Information
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName', async function(req, res) {
 	logger.debug('================ GET CHANNEL INFORMATION ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -295,6 +300,7 @@ app.get('/channels/:channelName', async function(req, res) {
 });
 
 //Query for Channel instantiated chaincodes
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/chaincodes', async function(req, res) {
 	logger.debug('================ GET INSTANTIATED CHAINCODES ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -305,6 +311,7 @@ app.get('/channels/:channelName/chaincodes', async function(req, res) {
 });
 
 // Query to fetch all Installed/instantiated chaincodes
+// Sample code from the ballance transfer example, to be removed.
 app.get('/chaincodes', async function(req, res) {
 	var peer = req.query.peer;
 	var installType = req.query.type;
@@ -315,6 +322,7 @@ app.get('/chaincodes', async function(req, res) {
 });
 
 // Query to fetch channels
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels', async function(req, res) {
 	logger.debug('================ GET CHANNELS ======================');
 	logger.debug('peer: ' + req.query.peer);
