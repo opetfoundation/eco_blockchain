@@ -5,6 +5,10 @@ Install the dependencies according to the [Prerequisites](http://hyperledger-fab
 Run the [./bootstrap.sh](./bootstrap.sh) script to pull the needed docker images and get fabric examples locally.
 This is a copy of the [bootstrap script from the fabric repository](https://github.com/hyperledger/fabric/blob/master/scripts/bootstrap.sh).
 
+# Develop setup
+
+Refer to the [README](./blockchain_api/README.md) under blockchain_api directory.
+
 # Main network setup
 
 Refer to the [README](./main-network-setup/README.md) under main-network-setup directory.
