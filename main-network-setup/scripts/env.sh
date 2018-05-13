@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Common settings and functions for the Hyperledger Fabric network setup.
 
 SCRIPT_PATH=`dirname $0`
 
@@ -19,6 +21,7 @@ CHANNEL_TX_FILE=/data/channel.tx
 ANCHOR_TX_FILE=/data/fabric.opetbot.com/anchors.tx
 # Name of the channel
 CHANNEL_NAME=opetchannel
+
 
 # Create the TLS directories of the MSP folder if they don't exist.
 # The fabric-ca-client should do this.
@@ -46,15 +49,12 @@ function getOrgCACerts {
    switchToAdminIdentity
 }
 
+
+# Enroll the organization admin user
 function switchToAdminIdentity {
-   # switchToAdminIdentity
    export FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
    export FABRIC_CA_CLIENT_TLS_CERTFILES=$ORG_MSP_DIR/tlscacerts/ca-fabric-opetbot-com-7054.pem
    fabric-ca-client enroll -d -u https://$ORG_ADMIN_USER:$ORG_ADMIN_PASS@$CA_HOST:7054
-
-   ## ORG_MSP_DIR=/data/fabric.opetbot.com/msp
-   ## ORG_ADMIN_HOME=/data/fabric.opetbot.com/admin
-   ## ORG_ADMIN_CERT=${ORG_MSP_DIR}/admincerts/cert.pem
 
    # Copy admincerts to local MSP
    mkdir -p $(dirname "${ORG_ADMIN_CERT}")
@@ -77,6 +77,7 @@ function copyAdminCert {
 }
 
 
+# Generate the genesis block and channel configuration transaction.
 function generateChannelArtifacts() {
   ORG=$ORDERER_ORG
 
@@ -108,6 +109,7 @@ function generateChannelArtifacts() {
 }
 
 
+# Generate the certificates for TLS communication.
 function genClientTLSCert {
    if [ $# -ne 4 ]; then
       echo "Usage: genClientTLSCert <enrollment url> <host name> <cert file> <key file>: $*"
@@ -131,7 +133,7 @@ function genClientTLSCert {
 }
 
 
-# log a message
+# Log a message
 function log {
    if [ "$1" = "-n" ]; then
       shift
@@ -141,7 +143,8 @@ function log {
    fi
 }
 
-# fatal a message
+
+# Log fatal message and exit
 function fatal {
    log "FATAL: $*"
    exit 1

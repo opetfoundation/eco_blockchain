@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Configure and start Fabric CA server.
+#
+# This is a bootstrap script for the Fabric CA docker container,
+# see the ../docker-compose-fabric-ca.yaml config.
 
 set -e
 
@@ -26,8 +31,6 @@ fabric-ca-server init -b $CA_ADMIN_USER:$CA_ADMIN_PASS
 
 # Copy the root CA's signing certificate to the data directory to be used by others
 cp $FABRIC_CA_SERVER_HOME/ca-cert.pem $TARGET_CERTFILE
-
-# setupHosts
 
 # Start the root CA
 fabric-ca-server start

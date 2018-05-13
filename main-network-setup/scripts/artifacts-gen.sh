@@ -1,9 +1,7 @@
 #!/bin/bash
 #
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+# Generate the genesis block and channel configuration transaction.
+# See the ../Makefile for usage example.
 
 set -e
 

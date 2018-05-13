@@ -123,8 +123,8 @@ registry:
 
   # Contains identity information which is used when LDAP is disabled
   identities:
-     - name: caadmin
-       pass: caadminpw
+     - name: ${CA_ADMIN_USER}
+       pass: ${CA_ADMIN_PASS}
        type: client
        affiliation: ""
        attrs:

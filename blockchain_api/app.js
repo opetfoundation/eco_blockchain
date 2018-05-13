@@ -18,14 +18,10 @@ var log4js = require('log4js');
 var logger = log4js.getLogger('SampleWebApp');
 var express = require('express');
 var session = require('express-session');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var util = require('util');
 var app = express();
-var expressJWT = require('express-jwt');
-var jwt = require('jsonwebtoken');
-var bearerToken = require('express-bearer-token');
 var cors = require('cors');
 var uuidv4 = require('uuid/v4');
 
@@ -33,10 +29,6 @@ require('./config.js');
 var hfc = require('fabric-client');
 
 var helper = require('./app/helper.js');
-var createChannel = require('./app/create-channel.js');
-var join = require('./app/join-channel.js');
-var install = require('./app/install-chaincode.js');
-var instantiate = require('./app/instantiate-chaincode.js');
 var invoke = require('./app/invoke-transaction.js');
 var query = require('./app/query.js');
 var enrollApiUser = require('./enroll-api-user.js');
@@ -60,8 +52,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
-// set secret variable
-app.set('secret', 'thisismysecret');
 app.use(async function(req, res, next) {
 	try {
 		var user = await enrollApiUser.enrollApiUser();
@@ -73,7 +63,6 @@ app.use(async function(req, res, next) {
 		next(error);
 	}
 });
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// START SERVER /////////////////////////////////
@@ -91,6 +80,10 @@ function getErrorMessage(field) {
 	return response;
 }
 
+/*
+ * Create the user record.
+ * Returns the user UID.
+ */
 app.post('/users', async function(req, res) {
 	logger.debug('==================== CREATE USER ==================');
 	var data = JSON.stringify(req.body);
@@ -115,10 +108,11 @@ app.post('/users', async function(req, res) {
 	catch(err){
 		res.send('{"error": "' + err.message + '" }');
 	}
-	
 });
 
-// Invoke transaction on chaincode on target peers
+/*
+ * Retrieve the user by UID.
+ */
 app.get('/users/:uid', async function(req, res) {
 	logger.debug('==================== RETRIEVE USER ==================');
 	logger.debug('End point : /users/{xxx}');
@@ -143,10 +137,12 @@ app.get('/users/:uid', async function(req, res) {
 	} catch(err) {
 		res.send('{"error": "' + err.message + '" }');
 	}
-
-
 });
 
+/*
+ * Create the document for the user specified by UID.
+ * Returns the document UID.
+ */
 app.post('/documents/:user_uid', async function(req, res) {
 	logger.debug('==================== CREATE DOCUMENT ==================');
 	var user_uid = req.params.user_uid;
@@ -171,10 +167,11 @@ app.post('/documents/:user_uid', async function(req, res) {
 	} catch(err) {
 		res.send('{"error": "' + err.message + '" }');
 	}
-	
 });
 
-// Invoke transaction on chaincode on target peers
+/*
+ * Retrieve the document by user UID and document UID.
+ */
 app.get('/documents/:user_uid/:doc_uid', async function(req, res) {
 	logger.debug('==================== RETRIEVE DOCUMENT ==================');
 	logger.debug('End point : /documents/:user_uid/:doc_uid');
@@ -197,11 +194,10 @@ app.get('/documents/:user_uid/:doc_uid', async function(req, res) {
 	} catch(err) {
 		res.send('{"error": "' + err.message + '" }');
 	}
-	
-	
 });
 
 // Query on chaincode on target peers
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, res) {
 	logger.debug('==================== QUERY BY CHAINCODE ==================');
 	var channelName = req.params.channelName;
@@ -238,7 +234,9 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function(req, 
 	let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);
 	res.send(message);
 });
+
 //  Query Get Block by BlockNumber
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/blocks/:blockId', async function(req, res) {
 	logger.debug('==================== GET BLOCK BY NUMBER ==================');
 	let blockId = req.params.blockId;
@@ -254,7 +252,9 @@ app.get('/channels/:channelName/blocks/:blockId', async function(req, res) {
 	let message = await query.getBlockByNumber(peer, req.params.channelName, blockId, req.username, req.orgname);
 	res.send(message);
 });
+
 // Query Get Transaction by Transaction ID
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) {
 	logger.debug('================ GET TRANSACTION BY TRANSACTION_ID ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -268,7 +268,9 @@ app.get('/channels/:channelName/transactions/:trxnId', async function(req, res) 
 	let message = await query.getTransactionByID(peer, req.params.channelName, trxnId, req.username, req.orgname);
 	res.send(message);
 });
+
 // Query Get Block by Hash
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/blocks', async function(req, res) {
 	logger.debug('================ GET BLOCK BY HASH ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -282,7 +284,9 @@ app.get('/channels/:channelName/blocks', async function(req, res) {
 	let message = await query.getBlockByHash(peer, req.params.channelName, hash, req.username, req.orgname);
 	res.send(message);
 });
+
 //Query for Channel Information
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName', async function(req, res) {
 	logger.debug('================ GET CHANNEL INFORMATION ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -291,7 +295,9 @@ app.get('/channels/:channelName', async function(req, res) {
 	let message = await query.getChainInfo(peer, req.params.channelName, req.username, req.orgname);
 	res.send(message);
 });
+
 //Query for Channel instantiated chaincodes
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels/:channelName/chaincodes', async function(req, res) {
 	logger.debug('================ GET INSTANTIATED CHAINCODES ======================');
 	logger.debug('channelName : ' + req.params.channelName);
@@ -300,7 +306,9 @@ app.get('/channels/:channelName/chaincodes', async function(req, res) {
 	let message = await query.getInstalledChaincodes(peer, req.params.channelName, 'instantiated', req.username, req.orgname);
 	res.send(message);
 });
+
 // Query to fetch all Installed/instantiated chaincodes
+// Sample code from the ballance transfer example, to be removed.
 app.get('/chaincodes', async function(req, res) {
 	var peer = req.query.peer;
 	var installType = req.query.type;
@@ -309,7 +317,9 @@ app.get('/chaincodes', async function(req, res) {
 	let message = await query.getInstalledChaincodes(peer, null, 'installed', req.username, req.orgname)
 	res.send(message);
 });
+
 // Query to fetch channels
+// Sample code from the ballance transfer example, to be removed.
 app.get('/channels', async function(req, res) {
 	logger.debug('================ GET CHANNELS ======================');
 	logger.debug('peer: ' + req.query.peer);
