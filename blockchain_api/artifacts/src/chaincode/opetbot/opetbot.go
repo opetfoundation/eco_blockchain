@@ -24,6 +24,10 @@ type User struct {
     Documents []string `json:"documents"`
 }
 
+/*
+    Document represents an arbitrary json document with user's data
+    Data - keeps json
+*/
 type Document struct {
     Data map[string]interface{} `json:"data"`
 }
@@ -32,13 +36,14 @@ const USER_KEY = "_USER_"
 const DOCUMENT_KEY = "__DOCUMENT__"
 
 
+/*
+    The function runs at chaincode initiation or update
+*/
 func (t *OpetCode) Init(stub shim.ChaincodeStubInterface) sc.Response {
     return shim.Success(nil)
 }
 
-// Invoke is called per transaction on the chaincode. Each transaction is
-// either a 'get' or a 'set' on the asset created by Init function. The Set
-// method may create a new asset by specifying a new key-value pair.
+// Invoke is called per transaction on the chaincode.
 func (t *OpetCode) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
     fmt.Printf("Invoke function\n")
     // Retrieve the requested Smart Contract function and arguments
@@ -58,10 +63,15 @@ func (t *OpetCode) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
     return shim.Error("Invalid Smart Contract function name.")
 }
 
+
 func (t *OpetCode) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
     return shim.Success(nil)
 }
 
+/*
+    loadUser is a helper to load the user structure from the storage by userKey.
+    Also checks, if user exists.
+*/
 func (t *OpetCode) loadUser(APIstub shim.ChaincodeStubInterface, userKey string) (User, error) {
     user_json, _ := APIstub.GetState(userKey)
     var user User
@@ -73,6 +83,10 @@ func (t *OpetCode) loadUser(APIstub shim.ChaincodeStubInterface, userKey string)
     return user, nil
 }
 
+/*
+    loadDocument is a helper to load the document structure from the storage by docKey.
+    Also checks, if document exists.
+*/
 func (t *OpetCode) loadDocument(APIstub shim.ChaincodeStubInterface, docKey string) (Document, error) {
     doc_json, _ := APIstub.GetState(docKey)
     var document Document
@@ -135,6 +149,12 @@ func (t *OpetCode) retrieveUser(APIstub shim.ChaincodeStubInterface, args []stri
     return shim.Success(user_json)
 }
 
+/*
+    createDocument creates a new document for the user
+    arg0 - user uid
+    arg1 - document uid
+    arg2 - document json
+*/
 func (t *OpetCode) createDocument(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
     if len(args) != 3 {
         return shim.Error("Incorrect number of arguments. Expecting 3")
@@ -173,6 +193,13 @@ func (t *OpetCode) createDocument(APIstub shim.ChaincodeStubInterface, args []st
     return shim.Success(nil)
 }
 
+
+/*
+    retrieveDocument returns the document by it's uid and user's uid.
+    Checks that the user owns the requested document.
+    arg0 - user uid
+    arg1 - document uid
+*/
 func (t *OpetCode) retrieveDocument(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
     if len(args) != 2 {
