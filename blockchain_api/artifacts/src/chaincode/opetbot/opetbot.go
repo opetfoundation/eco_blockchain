@@ -25,8 +25,8 @@ type User struct {
 }
 
 /*
-    The struct is used to store undefined json tree of the user's document
-    Data - saves json
+    Document represents an arbitrary json document with user's data
+    Data - keeps json
 */
 type Document struct {
     Data map[string]interface{} `json:"data"`
@@ -37,7 +37,7 @@ const DOCUMENT_KEY = "__DOCUMENT__"
 
 
 /*
-    The function that runs at chaincode initiation or update
+    The function runs at chaincode initiation or update
 */
 func (t *OpetCode) Init(stub shim.ChaincodeStubInterface) sc.Response {
     return shim.Success(nil)
@@ -69,7 +69,7 @@ func (t *OpetCode) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 }
 
 /*
-    It is helper function. It is used to load user structure from the storage.
+    loadUser is a helper to load the user structure from the storage by userKey.
     Also checks, if user exists.
 */
 func (t *OpetCode) loadUser(APIstub shim.ChaincodeStubInterface, userKey string) (User, error) {
@@ -84,7 +84,7 @@ func (t *OpetCode) loadUser(APIstub shim.ChaincodeStubInterface, userKey string)
 }
 
 /*
-    It is helper function. It is used to load documet structure from the storage.
+    loadDocument is a helper to load the document structure from the storage by docKey.
     Also checks, if document exists.
 */
 func (t *OpetCode) loadDocument(APIstub shim.ChaincodeStubInterface, docKey string) (Document, error) {
@@ -150,7 +150,7 @@ func (t *OpetCode) retrieveUser(APIstub shim.ChaincodeStubInterface, args []stri
 }
 
 /*
-    The function creates new document for the user.
+    createDocument creates a new document for the user
     arg0 - user uid
     arg1 - document uid
     arg2 - document json
@@ -195,7 +195,8 @@ func (t *OpetCode) createDocument(APIstub shim.ChaincodeStubInterface, args []st
 
 
 /*
-    The function retrieves document by it's uid and user's uid. Checks that the user has the document.
+    retrieveDocument returns the document by it's uid and user's uid.
+    Checks that the user owns the requested document.
     arg0 - user uid
     arg1 - document uid
 */
