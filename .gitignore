@@ -10,3 +10,4 @@ package-lock.json
 fabric-samples/
 main-network-setup/data/
 fabric-client-kv-org*
+.opet
