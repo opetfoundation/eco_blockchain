@@ -22,6 +22,7 @@ type User struct {
     Uid string `json:"UID"`
     Data map[string]string `json:"data"`
     Documents []string `json:"documents"`
+    Files []File `json:"files"`
 }
 
 /*
@@ -32,8 +33,22 @@ type Document struct {
     Data map[string]interface{} `json:"data"`
 }
 
+type FileStatus int
+
+const (
+   Valid    FileStatus = 0
+   Unvalid    FileStatus = 1
+   Verifying FileStatus = 2
+)
+
+type File struct { 
+    Hash string `json:"hash"`
+    Status FileStatus `json:"status"`
+}
+
 const USER_KEY = "_USER_"
 const DOCUMENT_KEY = "__DOCUMENT__"
+const FILE_KEY = "_FILE_"
 
 
 /*
@@ -96,6 +111,21 @@ func (t *OpetCode) loadDocument(APIstub shim.ChaincodeStubInterface, docKey stri
     }    
     _ = json.Unmarshal([]byte(doc_json), &document)    
     return document, nil
+} 
+
+/*
+    loadFile is a helper to load the file structure from the storage by fileKey.
+    Also checks, if file exists.
+*/
+func (t *OpetCode) loadFile(APIstub shim.ChaincodeStubInterface, fileKey string) (File, error) {
+    file_json, _ := APIstub.GetState(fileKey)
+    var file File
+
+    if file_json == nil {
+        return file, errors.New("There is no file exist")
+    }    
+    _ = json.Unmarshal([]byte(file_json), &file)    
+    return file, nil
 } 
 
 /*
@@ -234,11 +264,22 @@ func (t *OpetCode) retrieveDocument(APIstub shim.ChaincodeStubInterface, args []
 
 
 
-
-
     doc_json, _ := json.Marshal(doc)
     fmt.Printf("%s \n", doc_json)
     return shim.Success(doc_json)
+}
+
+func (t *OpetCode) createFile(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+    user_uid := args[0]
+    file_uid := args[1]
+    file_hash := args[2]
+
+    file_key, _ := APIstub.CreateCompositeKey(file_uid, []string{FILE_KEY})
+    user_key, _ := APIstub.CreateCompositeKey(user_uid, []string{USER_KEY})
+
 }
 
 
