@@ -22,7 +22,7 @@ type User struct {
     Uid string `json:"UID"`
     Data map[string]string `json:"data"`
     Documents []string `json:"documents"`
-    Files []File `json:"files"`
+    Files []string `json:"files"`
 }
 
 /*
@@ -279,6 +279,25 @@ func (t *OpetCode) createFile(APIstub shim.ChaincodeStubInterface, args []string
 
     file_key, _ := APIstub.CreateCompositeKey(file_uid, []string{FILE_KEY})
     user_key, _ := APIstub.CreateCompositeKey(user_uid, []string{USER_KEY})
+
+    if _, err := t.loadFile(APIstub, file_key); err == nil {
+        return shim.Error("File already exists")
+    }
+
+    user, err := t.loadUser(APIstub, user_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s user doesn't not exist", user_uid))
+    }
+    new_file := File{Hash: file_hash, Status: Valid}
+    user.Files = append(user.Files, file_uid)
+
+    new_file_json, _ := json.Marshal(new_file)
+    APIstub.PutState(file_key, new_file_json)
+
+    user_json, _ := json.Marshal(user)
+    APIstub.PutState(user_key, user_json)
+
+    return shim.Success(nil)
 
 }
 
