@@ -269,6 +269,13 @@ func (t *OpetCode) retrieveDocument(APIstub shim.ChaincodeStubInterface, args []
     return shim.Success(doc_json)
 }
 
+
+/*
+    createFile creates a new file for the user
+    arg0 - user uid
+    arg1 - file uid
+    arg2 - file hash
+*/
 func (t *OpetCode) createFile(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
     if len(args) != 3 {
         return shim.Error("Incorrect number of arguments. Expecting 3")
