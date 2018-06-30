@@ -308,6 +308,48 @@ func (t *OpetCode) createFile(APIstub shim.ChaincodeStubInterface, args []string
 
 }
 
+/*
+    // TODO comment
+*/
+func (t *OpetCode) retrieveFile(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+    user_uid := args[0]
+    file_uid := args[1]
+
+    user_key, _ := APIstub.CreateCompositeKey(user_uid, []string{USER_KEY})
+    user, err := t.loadUser(APIstub, user_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s user doesn't not exist", user_uid))
+    }
+    found := false
+    for i := range user.Files {
+    if user.Files[i] == file_uid {
+        found = true
+        break
+        }
+    }
+    if !found {
+        return shim.Error(fmt.Sprintf("The user: %s doesn't have document: %s", user_uid, file_uid))
+    }
+
+
+
+    file_key, _ := APIstub.CreateCompositeKey(file_uid, []string{FILE_KEY})
+    file, err := t.loadDocument(APIstub, file_key)
+    if err != nil {
+        return shim.Error(fmt.Sprintf("The %s document does not exist", file_uid))
+    }
+
+
+
+    file_json, _ := json.Marshal(file)
+    fmt.Printf("%s \n", file_json)
+    return shim.Success(file_json)
+}
+
 
 
 // main function starts up the chaincode in the container during instantiate
