@@ -309,7 +309,7 @@ func (t *OpetCode) createFile(APIstub shim.ChaincodeStubInterface, args []string
 }
 
 /*
-    // TODO comment
+    TODO comment
 */
 func (t *OpetCode) retrieveFile(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
