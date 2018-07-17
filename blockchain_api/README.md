@@ -1,6 +1,6 @@
 # Run the API in dev mode
 
-The development mode API setup is based on the [ballance transfer hyperledger example](https://github.com/hyperledger/fabric-samples/tree/release-1.1/balance-transfer), refer to it to find out more about the setup.
+The development mode API setup is based on the [balance transfer hyperledger example](https://github.com/hyperledger/fabric-samples/tree/release-1.1/balance-transfer), refer to it to find out more about the setup.
 
 To run the API in a development mode use following commands:
 
