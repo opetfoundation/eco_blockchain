@@ -20,7 +20,7 @@ Also the monolith docker compose config was split to separate setups for CA, ord
 - Edit the `.env.ca` file, set passwords for CA
 - Start Fabric CA: `make fabric-ca-up`
 - Register network participants with CA: `make fabric-ca-register`
-- Generage artifacts `make fabric-ca-artifacts-gen`
+- Generate artifacts `make fabric-ca-artifacts-gen`
 - Get /data/opet-ca-cert.pem, /data/genesis.block, /data/channel.tx (will be needed by orderer / peer hosts)
 - Get /data/fabric.opetbot.com (organization MSP, will be needed for channel setup)
 
